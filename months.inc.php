@@ -1,0 +1,13 @@
+<option value="">[M]
+<option <? echo $month_01; ?> value="01">Jan
+<option <? echo $month_02; ?> value="02">Feb
+<option <? echo $month_03; ?> value="03">Mar
+<option <? echo $month_04; ?> value="04">Apr
+<option <? echo $month_05; ?> value="05">May
+<option <? echo $month_06; ?> value="06">Jun
+<option <? echo $month_07; ?> value="07">Jul
+<option <? echo $month_08; ?> value="08">Aug
+<option <? echo $month_09; ?> value="09">Sep
+<option <? echo $month_10; ?> value="10">Oct
+<option <? echo $month_11; ?> value="11">Nov
+<option <? echo $month_12; ?> value="12">Dec

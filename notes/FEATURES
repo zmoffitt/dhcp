@@ -1,0 +1,22 @@
+This is a Web-Based ISC DHCP Manager
+************************************
+
+Features:
+
+- Configurable Options for the DHCP Manager, such as color schemes,
+directory lookup, default authentication host, etc.
+- Global Options Configuration, including DNS and WINS servers.
+- Subnet Configuration, including lease time and MAC authentication.
+- Registration of MAC addresses (in case MAC authentication is on)
+- Blacklisting of MAC addresses to deny access.
+- Change Logs.
+- Login Logs.
+- Highlights active IP leases.
+- Color-code non-registered MAC addresses.
+- Allow MAC Register/Blacklist within the active lease page.
+- Checking of MAC address format.
+- Make sure IP is not in use (static/reserved) before allowing switching
+of an IP address.
+- Display status of dhcpd daemon and the last time it was started.
+- Allow auto-fresh of IP page.
+- Allow filtering of IP page by IP types.

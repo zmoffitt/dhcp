@@ -1,0 +1,106 @@
+<?
+	include "authenticate.php";
+	include "config.inc.php";
+	$access_level = access_level($username);
+        $who = $username;
+
+	if (strcmp($selection, "Cancel") == 0){
+			HEADER("Location:mac.php?username=$username&auth_string=$auth_string");
+			exit;
+	}
+
+?>
+	
+<title>DHCP Manager</title>
+<center>
+<font color=0000ff>
+<h1>DHCP Manager - MAC Management</h1>
+</font>
+<? include "links.inc"; ?>
+<br>
+
+<? 
+	if (strcmp($action, "delete") == 0){
+
+		if (strcmp($selection, "Delete") == 0){
+
+			include "admin_check.inc.php";
+
+			include "db.inc.php";
+        		$id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
+			$str_sql = "DELETE FROM $db_tablename_ip WHERE username = '$username_db' AND mac = '$mac'";
+
+			// print "Query: *$str_sql*<br>\n";
+		        $result = mysql_db_query($db_name, $str_sql, $id_link);
+
+		       	if (! $result){
+        		        print "Failed to submit!<br>\n";
+       	        		include "$footer";
+	               		exit;	
+        		}	
+		
+                	$datetime = date("Y-m-d H:i:s");
+	                $ip_from = $REMOTE_ADDR;
+
+        	        $changes = "<b>MAC: Delete Registered</b><br>\n";
+                	$changes .= "Computer Name: $username_db.<br>\n";
+        	        $changes .= "MAC: $mac.<br>\n";
+
+	                $str_sql = "INSERT INTO $db_tablename_logs (who, ip, category, changes, datetime) VALUES ('$who', '$ip_from', 'mac', '$changes', '$datetime')";
+                // print "Changes: *$changes*<br>\n";
+
+	                $result = mysql_db_query($db_name, $str_sql, $id_link);
+
+        	        if (! $result){
+                	        print "Failed to submit log!<br>\n";
+                        	include "$footer";
+	                        exit;
+        	        }
+
+			print "<center>\n";
+			print "<font color=ff0000>\n";
+			print "<h3>MAC Record Deleted!</h3>\n";
+	                print "<b><i><small>(Will Take Effect In About 1 Minute)</small></i></b>\n";
+			print "</font>\n";
+			print "</center>\n";
+
+			mark_export();
+
+		}
+
+	}
+	
+	else{
+
+		print "<center>\n";
+		print "<font color=ff0000>\n";
+		print "<h3>Are you sure you want to delete the following:</h3>\n";
+		print "</font>\n";
+		print "<b>Computer Name: $username<br>\n";
+		print "Mac: $mac</b><br><br>\n";
+		
+		print "<table border=0>\n";
+               	print "<form action=mac_delete.php>\n";
+
+                print "<input type=hidden name=action value=delete>\n";
+                print "<input type=hidden name=username value=$username>\n";
+       	        print "<input type=hidden name=auth_string value=$auth_string>\n";
+               	print "<input type=hidden name=username_db value=$username_db>\n";
+                print "<input type=hidden name=mac value=$mac>\n";
+
+                print "<td align=center>\n";
+                print "<input type=submit name=selection value=Delete>\n";
+                print "</td>\n";
+
+                print "<td align=center>\n";
+                print "<input type=submit name=selection value=Cancel>\n";
+                print "</td></tr>\n";
+
+                print "</form>\n";
+		print "</table>\n";
+		print "</center>\n";
+	}
+
+	include "$footer";
+
+?>

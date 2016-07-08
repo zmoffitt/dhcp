@@ -1,0 +1,16 @@
+* For customizations, change the following files:
+
+config.inc.php
+subnets.inc.php
+
+* Make sure you allow mysql access among all the servers. For example:
+
+From mysql on Uris, do:
+mysql> GRANT ALL PRIVILEGES on dhcp.* to dhcp@128.59.219.2 identified by '<password>';
+
+From mysql on Culbs, do:
+mysql> GRANT ALL PRIVILEGES on dhcp.* to dhcp@128.59.205.3 identified by '<password>';
+
+* Make sure you have the dhcp/queue directory with following criteria:
+drwx------    2 apache   root         4096 Dec 17 16:40 queue/
+

@@ -1,0 +1,142 @@
+#!/usr/bin/perl
+
+print "Dangerous! Exiting ...\n";
+exit 1;
+
+# Extract the data-jack data from a comma-separated file and import it into
+# the mysql database
+
+# make $debug 1 to turn on debugging messages
+# debug = 1;
+
+# for running under windows
+#$pc_mode = 1;
+
+
+$file = "data.csv";
+$tmpfile = "out.txt";
+
+$dbname = "dhcp";
+$tablename = "ip";
+$user = "dhcp";
+$password = "dhcp2cool";
+
+if ($pc_mode != 1){
+	$mysql = "/usr/bin/mysql";
+}
+
+else{
+	$mysql = "mysql";
+}
+
+open(FILE, "< $file") || die "Error opening file *$file*!";
+open(OUT, "> $tmpfile") || die "Error opening file *$tmpfile*!";
+
+print OUT "use $dbname;\n";
+print OUT "delete from global;\n";
+print OUT "delete from declaration;\n";
+print OUT "delete from $tablename;\n\n";
+
+# populating the "global" table
+print OUT "INSERT INTO global (domain, dns_1, dns_2, wins_1, wins_2) VALUES (\"gsb.columbia.edu\", \"128.59.39.39\", \"128.59.40.142\", \"128.59.199.5\", \"128.59.211.5\");\n\n";
+
+# populating the "declaration" table
+print OUT "INSERT INTO declaration (subnet, mask, authoritative, mac_auth, router, broadcast, lease, notes) VALUES (\"128.59.84.0\", \"255.255.255.0\", 1, 0, \"128.59.84.1\", \"128.59.84.255\", 900, \"Subnet 84 declaration\");\n";
+
+print OUT "INSERT INTO declaration (subnet, mask, authoritative, mac_auth, router, broadcast, lease, notes) VALUES (\"128.59.172.0\", \"255.255.255.0\", 1, 0, \"128.59.172.1\", \"128.59.172.255\", 3600, \"Subnet 172 declaration\");\n";
+
+print OUT "INSERT INTO declaration (subnet, mask, authoritative, mac_auth, router, broadcast, lease, notes) VALUES (\"128.59.199.0\", \"255.255.255.0\", 1, 0, \"128.59.199.1\", \"128.59.199.255\", 900, \"Subnet 199 declaration\");\n";
+
+print OUT "INSERT INTO declaration (subnet, mask, authoritative, mac_auth, router, broadcast, lease, notes) VALUES (\"128.59.205.0\", \"255.255.255.0\", 1, 0, \"128.59.205.1\", \"128.59.205.255\", 900, \"Subnet 205 declaration\");\n";
+
+print OUT "INSERT INTO declaration (subnet, mask, authoritative, mac_auth, router, broadcast, lease, notes) VALUES (\"128.59.215.0\", \"255.255.255.0\", 1, 0, \"128.59.215.1\", \"128.59.215.255\", 3600, \"Subnet 215 declaration\");\n";
+
+print OUT "INSERT INTO declaration (subnet, mask, authoritative, mac_auth, router, broadcast, lease, notes) VALUES (\"128.59.218.0\", \"255.255.255.0\", 1, 0, \"128.59.218.1\", \"128.59.218.255\", 3600, \"Subnet 218 declaration\");\n";
+
+# populating the "staff" table
+print OUT "INSERT INTO staff (username, grp) VALUES (\"dlee\", \"systems\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"tolga\", \"systems\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"bchang\", \"support\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"rgiraud\", \"systems\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"efoley\", \"systems\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"cmeola\", \"systems\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"mliu\", \"support\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"drosenbl\", \"support\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"ecruz\", \"support\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"ajohnson\", \"support\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"tlin\", \"support\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"sdeleon\", \"support\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"esantiag\", \"support\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"lrichmon\", \"support\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"mbologna\", \"support\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"bc212\", \"systems\");\n";
+print OUT "INSERT INTO staff (username, grp) VALUES (\"wdejesus\", \"support\");\n";
+
+# populating the "state" table
+print OUT "INSERT INTO state (need_update) VALUES (\"0\");\n";
+
+$insert_str = "INSERT INTO $tablename VALUES (";
+
+# line counter 
+$i = 1;
+
+# row id
+$id = 1;
+
+
+while(<FILE>){
+
+    chop($_);
+
+    $_ =~ s/\r//g;
+    $_ =~ s/\"//g;
+
+    @fields = split(/,/, $_);
+
+    $ip = $fields[0];
+    $ip_type = $fields[1];
+    $mac = $fields[2];
+    $username = $fields[3];
+    $clientname = $fields[4];
+    $lease = $fields[5];
+    $notes = $fields[6];
+
+    if (!($ip =~ /^\d+\.\d+\.\d+\.\d+$/)){
+
+	if ($debug == 1){
+	    printf("Line %d: Invalid IP! *$_*\n", $i);
+	}
+
+	$i++;
+	next;
+    }
+
+    print OUT "$insert_str";
+
+    $data = "$id, \"$ip\", \"$ip_type\", \"$mac\", \"$username\", \"$clientname\", \"$lease\", \"$notes\"";
+
+    print OUT "$data";
+    print OUT ");\n";
+    $i++;
+    $id++;  
+
+}
+
+close(FILE);
+close(OUT);
+
+$command = "$mysql -u$user -p$password < $tmpfile";
+
+system("$command");
+
+if ($pc_mode == 1){
+	$command = "del $tmpfile";
+}
+
+else{
+	$command = "rm -f $tmpfile";
+}
+
+system("$command");
+
+exit 0;

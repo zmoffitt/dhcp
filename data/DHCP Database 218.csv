@@ -1,0 +1,255 @@
+IP Address,IP Type,MAC Address,Host Name,User Full Name, Lease Time,Description
+128.59.218.1,static,,cis,cis,,Router
+128.59.218.2,static,00:50:8B:EE:22D8,DEVWEB2,cis,,Server - DEVWEB2
+128.59.218.3,static,00:20:35:E7:4A:E2,WWW,cis,,Server - WWW
+128.59.218.4,free,,,,,
+128.59.218.5,static,00:60:94:EA:90:3E,VOYAGER,cis,,Server - VOYAGER
+128.59.218.6,static,00:50:8B:44:FE:4D,DEVSQL,cis,,Server - DEVSQL
+128.59.218.7,free,,,,,
+128.59.218.8,free,,,,,
+128.59.218.9,static,00:60:B0:BD:24:D0,CIS_2,CIS,,Network Printer - CIS_2
+128.59.218.10,static,,ATLANTIS,cis,,Server - ATLANTIS
+128.59.218.11,static,00:10:83:5C:BC:EA,STUAFF_1,Stud Aff,,Network Printer - STUAFF_1
+128.59.218.12,static,00:60:B0:BA:31:3C,CIS_1,cis,,Network Printer - CIS_1
+128.59.218.13,static,00:C0:4F:AD:C3:B4,BETTYBLUE,cis,,Server - BETTYBLUE
+128.59.218.14,free,,,,,
+128.59.218.15,static,08:00:3E:31:48:9A,OP_XEROX,Operation,,Network Printer - OP_XEROX (Xerox)+G232
+128.59.218.16,dynamic,,,,,
+128.59.218.17,dynamic,,,,,
+128.59.218.18,static,08:00:09:AC:29:B8,CHAZEN_1,Chazen,,Network Printer - CHAZEN_1
+128.59.218.19,static,,SATORI,cis,,Server - SATORI
+128.59.218.20,static,,SATORI,cis,,Server - SATORI
+128.59.218.21,dynamic,,,,,
+128.59.218.22,dynamic,,,,,
+128.59.218.23,dynamic,,,,,
+128.59.218.24,dynamic,,,,,
+128.59.218.25,dynamic,,,,,
+128.59.218.26,dynamic,,,,,
+128.59.218.27,static,00:60:B0:BD:24:69,ADMINSS_3,Admissions,,Network Printer - ADMISS_3
+128.59.218.28,dynamic,,,,,
+128.59.218.29,dynamic,,,,,
+128.59.218.30,dynamic,,,,,
+128.59.218.31,dynamic,,,,,
+128.59.218.32,static,00:60:B0:D3:F2:3E,ADMINSS_1,Admissions,,Network Printer - ADMISS_1
+128.59.218.33,dynamic,,,,,
+128.59.218.34,dynamic,,,,,
+128.59.218.35,dynamic,,,,,
+128.59.218.36,dynamic,,,,,
+128.59.218.37,static,00:60:B0:D3:78:FA,CARSVRC_,Career Svcs,,Network Printer - CARSVCS_
+128.59.218.38,dynamic,,,,,
+128.59.218.39,dynamic,,,,,
+128.59.218.40,dynamic,,,,,
+128.59.218.41,dynamic,,,,,
+128.59.218.42,dynamic,,,,,
+128.59.218.43,dynamic,,,,,
+128.59.218.44,dynamic,,,,,
+128.59.218.45,dynamic,,,,,
+128.59.218.46,dynamic,,,,,
+128.59.218.47,dynamic,,,,,
+128.59.218.48,dynamic,,,,,
+128.59.218.49,dynamic,,,,,
+128.59.218.50,dynamic,,,,,
+128.59.218.51,dynamic,,,,,
+128.59.218.52,dynamic,,,,,
+128.59.218.53,dynamic,,,,,
+128.59.218.54,dynamic,,,,,
+128.59.218.55,dynamic,,,,,
+128.59.218.56,dynamic,,,,,
+128.59.218.57,dynamic,,,,,
+128.59.218.58,dynamic,,,,,
+128.59.218.59,dynamic,,,,,
+128.59.218.60,dynamic,,,,,
+128.59.218.61,static,00:C0:4F:7F:19:87,SRV_REMEDY,cis,,Server - SRV_REMEDY
+128.59.218.62,dynamic,,,,,
+128.59.218.63,dynamic,,,,,
+128.59.218.64,dynamic,,,,,
+128.59.218.65,dynamic,,,,,
+128.59.218.66,dynamic,,,,,
+128.59.218.67,dynamic,,,,,
+128.59.218.68,dynamic,,,,,
+128.59.218.69,static,00:60:B0:C0:5A:62,DEANS_2,Dean's Office,,Network Printer - DEANS_2
+128.59.218.70,dynamic,,,,,
+128.59.218.71,static,00:10:83:2B:36:47,PUBAFF_1,Public Aff,,Network Printer - PUBAFF_1
+128.59.218.72,dynamic,,,,,
+128.59.218.73,dynamic,,,,,
+128.59.218.74,dynamic,,,,,
+128.59.218.75,dynamic,,,,,
+128.59.218.76,dynamic,,,,,
+128.59.218.77,dynamic,,,,,
+128.59.218.78,dynamic,,,,,
+128.59.218.79,dynamic,,,,,
+128.59.218.80,dynamic,,,,,
+128.59.218.81,dynamic,,,,,
+128.59.218.82,dynamic,,,,,
+128.59.218.83,dynamic,,,,,
+128.59.218.84,dynamic,,,,,
+128.59.218.85,dynamic,,,,,
+128.59.218.86,dynamic,,,,,
+128.59.218.87,dynamic,,,,,
+128.59.218.88,dynamic,,,,,
+128.59.218.89,static,,EXTREL_1,Ext. Rel.,,Network Printer - EXTREL_1
+128.59.218.90,dynamic,,,,,
+128.59.218.91,dynamic,,,,,
+128.59.218.92,dynamic,,,,,
+128.59.218.93,dynamic,,,,,
+128.59.218.94,dynamic,,,,,
+128.59.218.95,dynamic,,,,,
+128.59.218.96,dynamic,,,,,
+128.59.218.97,static,00:10:83:08:49:3D,EXTREL_4,Ext. Rel.,,Network Printer - EXTREL_4
+128.59.218.98,dynamic,,,,,
+128.59.218.99,dynamic,,,,,
+128.59.218.100,dynamic,,,,,
+128.59.218.101,dynamic,,,,,
+128.59.218.102,static,00:30:C1:60:31:BB,PUBLICA_2PS,Publication,,Network Printer - PUBLICA_2PS
+128.59.218.103,static,08:00:09:C7:D7:B4,FINAID_1,Finacial Aid,,Network Printer - FINAID_1
+128.59.218.104,dynamic,,,,,
+128.59.218.105,dynamic,,,,,
+128.59.218.106,dynamic,,,,,
+128.59.218.107,static,08:00:09:C8:B0:C5,DEANS_1,Dean's Office,,Network Printer - DEANS_1
+128.59.218.108,dynamic,,,,,
+128.59.218.109,dynamic,,,,,
+128.59.218.110,dynamic,,,,,
+128.59.218.111,dynamic,,,,,
+128.59.218.112,dynamic,,,,,
+128.59.218.113,reserved,00:B0:D0:E9:B2:21,PODIUM141,CIS,,Classroom Podium - PODIUM141
+128.59.218.114,dynamic,,,,,
+128.59.218.115,dynamic,,,,,
+128.59.218.116,dynamic,,,,,
+128.59.218.117,dynamic,,,,,
+128.59.218.118,dynamic,,,,,
+128.59.218.119,dynamic,,,,,
+128.59.218.120,dynamic,,,,,
+128.59.218.121,static,,CGI_SERVER,CIS,,Server - CGI_SERVER
+128.59.218.122,dynamic,,,,,
+128.59.218.123,dynamic,,,,,
+128.59.218.124,dynamic,,,,,
+128.59.218.125,dynamic,,,,,
+128.59.218.126,reserved,00:B0:D0:E9:B2:48,PODIUM140,CIS,,Classroom Podium - PODIUM140
+128.59.218.127,static,00:60:B0:BF:1B:C1,PUBLICA_1PS,Publication,,Network Printer - PUBLICA_1PS
+128.59.218.128,dynamic,,,,,
+128.59.218.129,dynamic,,,,,
+128.59.218.130,static,00:30:C1:8B:E4:72,ADMISS_2,Admiss,,Network Printer - ADMISS_2
+128.59.218.131,dynamic,,,,,
+128.59.218.132,dynamic,,,,,
+128.59.218.133,dynamic,,,,,
+128.59.218.134,dynamic,,,,,
+128.59.218.135,dynamic,,,,,
+128.59.218.136,dynamic,,,,,
+128.59.218.137,dynamic,,,,,
+128.59.218.138,dynamic,,,,,
+128.59.218.139,dynamic,,,,,
+128.59.218.140,dynamic,,,,,
+128.59.218.141,dynamic,,,,,
+128.59.218.142,dynamic,,,,,
+128.59.218.143,dynamic,,,,,
+128.59.218.144,dynamic,,,,,
+128.59.218.145,dynamic,,,,,
+128.59.218.146,dynamic,,,,,
+128.59.218.147,dynamic,,,,,
+128.59.218.148,dynamic,,,,,
+128.59.218.149,dynamic,,,,,
+128.59.218.150,dynamic,,,,,
+128.59.218.151,dynamic,,,,,
+128.59.218.152,dynamic,,,,,
+128.59.218.153,static,08:00:3E:29:CC:1E,STUACT_XEROX,Stud. Act.,,Network Printer - STUDACT_XEROX (Xerox)+G14
+128.59.218.154,dynamic,,,,,
+128.59.218.155,static,00:10:83:06:54:37,EXTREL_5,Ext. Rel.,,Network Printer - EXTREL_5
+128.59.218.156,dynamic,,,,,
+128.59.218.157,dynamic,,,,,
+128.59.218.158,dynamic,,,,,
+128.59.218.159,dynamic,,,,,
+128.59.218.160,dynamic
+128.59.218.161,dynamic
+128.59.218.162,dynamic
+128.59.218.163,dynamic
+128.59.218.164,dynamic
+128.59.218.165,dynamic
+128.59.218.166,dynamic
+128.59.218.167,dynamic
+128.59.218.168,dynamic
+128.59.218.169,dynamic
+128.59.218.170,dynamic
+128.59.218.171,dynamic
+128.59.218.172,dynamic
+128.59.218.173,dynamic
+128.59.218.174,dynamic
+128.59.218.175,dynamic
+128.59.218.176,dynamic
+128.59.218.177,dynamic
+128.59.218.178,dynamic
+128.59.218.179,dynamic
+128.59.218.180,dynamic
+128.59.218.181,dynamic
+128.59.218.182,dynamic
+128.59.218.183,dynamic
+128.59.218.184,dynamic
+128.59.218.185,dynamic
+128.59.218.186,dynamic
+128.59.218.187,dynamic
+128.59.218.188,dynamic
+128.59.218.189,dynamic
+128.59.218.190,dynamic
+128.59.218.191,dynamic
+128.59.218.192,dynamic,,,,,
+128.59.218.193,dynamic,,,,,
+128.59.218.194,dynamic,,,,,
+128.59.218.195,static,,TOLGUS,CIS,,Server - TOLGUS
+128.59.218.196,dynamic,,,,,
+128.59.218.197,dynamic,,,,,
+128.59.218.198,dynamic,,,,,
+128.59.218.199,static,08:00:3E:30:AA:F1,EXECRES_1,Exec. Res.,,Network Printer - EXECRES_1 (Xerox)
+128.59.218.200,dynamic,,,,,
+128.59.218.201,dynamic,,,,,
+128.59.218.202,dynamic,,,,,
+128.59.218.203,dynamic,,,,,
+128.59.218.204,dynamic,,,,,
+128.59.218.205,dynamic,,,,,
+128.59.218.206,dynamic,,,,,
+128.59.218.207,dynamic,,,,,
+128.59.218.208,dynamic,,,,,
+128.59.218.209,dynamic,,,,,
+128.59.218.210,dynamic,,,,,
+128.59.218.211,dynamic,,,,,
+128.59.218.212,dynamic,,,,,
+128.59.218.213,dynamic,,,,,
+128.59.218.214,dynamic,,,,,
+128.59.218.215,dynamic,,,,,
+128.59.218.216,dynamic,,,,,
+128.59.218.217,dynamic,,,,,
+128.59.218.218,static,00:01:E6:01:6E:43,OP_COLOR,Operations,,Network Printer - OP_COLOR
+128.59.218.219,dynamic,,,,,
+128.59.218.220,dynamic,,,,,
+128.59.218.221,dynamic,,,,,
+128.59.218.222,dynamic,,,,,
+128.59.218.223,dynamic,,,,,
+128.59.218.224,dynamic,,,,,
+128.59.218.225,dynamic,,,,,
+128.59.218.226,dynamic,,,,,
+128.59.218.227,dynamic,,,,,
+128.59.218.228,dynamic,,,,,
+128.59.218.229,dynamic,,,,,
+128.59.218.230,static,08:00:3E:29:E9:51,DEANS_3,Dean's Off,,Network Printer - DEANS_3 (Xerox)
+128.59.218.231,dynamic,,,,,
+128.59.218.232,dynamic,,,,,
+128.59.218.233,dynamic,,,,,
+128.59.218.234,dynamic,,,,,
+128.59.218.235,dynamic,,,,,
+128.59.218.236,static,,,cis,,Switch
+128.59.218.237,static,,,cis,,Switch
+128.59.218.238,free,,,,,unused by CIS
+128.59.218.239,static,,,cis,,Switch
+128.59.218.240,free,,,,,unused by CIS
+128.59.218.241,static,,,cis,,Switch
+128.59.218.242,free,,,,,unused by CIS
+128.59.218.243,static,,,cis,,Switch
+128.59.218.244,static,,,cis,,Switch
+128.59.218.245,static,,,cis,,Switch
+128.59.218.246,free,,,,,unused by CIS
+128.59.218.247,static,,,cis,,Switch
+128.59.218.248,free,,,,,unused by CIS
+128.59.218.249,static,,,cis,,Switch
+128.59.218.250,free,,,,,unused by CIS
+128.59.218.251,free,,,,,unused by CIS
+128.59.218.252,free,,,,,unused by CIS
+128.59.218.253,free,,,,,unused by CIS
+128.59.218.254,free,,,,,unused by CIS

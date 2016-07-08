@@ -1,0 +1,255 @@
+IP Address,IP Type,MAC Address,Host Name,User Full Name, Lease Time,Description
+128.59.199.1,static,,cis,cis,,Router
+128.59.199.2,free,,,,,unused by CIS
+128.59.199.3,static,00:80:5F:A7:E4:A6,cis,cis,,Server - Enterprise
+128.59.199.4,free,,,,,unused by CIS
+128.59.199.5,static,00:C0:4F:2D:71:91,cis,cis,,Server - Win_Uris
+128.59.199.6,free,,,,,unused by CIS
+128.59.199.7,static,00:80:5F:A7:59:4C,www3,cis,,Server - WWW3
+128.59.199.8,static,00:06:5B:4B:06:84,CMEOLA,Christine Ergunay,,Desktop - CMEOLA
+128.59.199.9,free,,,,,unused by CIS
+128.59.199.10,static,,cmm64,Christine Ergunay,,Desktop
+128.59.199.11,free,,,,,unused by CIS
+128.59.199.12,free,,,,,unused by CIS
+128.59.199.13,static,,www1,cis,,Server - WWW1
+128.59.199.14,static,,ebbs,gba,,Server - EBBS GBA
+128.59.199.15,static,00:B0:D0:E9:B1:66,PODIUM142,cis,,Podium - Room 142
+128.59.199.16,static,,lcl-rm201-frnt-right,cis,,Local Printer - Room201 - Front Right
+128.59.199.17,static,,lcl-rm201-frnt-left,cis,,Local Printer - Room201 - Front Left
+128.59.199.18,static,,lcl-rm201-frnt-back,cis,,Local Printer - Room201 - Front Back
+128.59.199.19,free,,,,,unused by CIS
+128.59.199.20,free,,,,,unused by CIS
+128.59.199.21,dynamic,,,,,
+128.59.199.22,dynamic,,,,,
+128.59.199.23,dynamic,,,,,
+128.59.199.24,dynamic,,,,,
+128.59.199.25,dynamic,,,,,
+128.59.199.26,dynamic,,,,,
+128.59.199.27,dynamic,,,,,
+128.59.199.28,dynamic,,,,,
+128.59.199.29,dynamic,,,,,
+128.59.199.30,dynamic,,,,,
+128.59.199.31,dynamic,,,,,
+128.59.199.32,dynamic
+128.59.199.33,dynamic
+128.59.199.34,dynamic
+128.59.199.35,dynamic
+128.59.199.36,dynamic
+128.59.199.37,dynamic
+128.59.199.38,dynamic
+128.59.199.39,dynamic
+128.59.199.40,dynamic
+128.59.199.41,dynamic
+128.59.199.42,dynamic
+128.59.199.43,dynamic
+128.59.199.44,dynamic
+128.59.199.45,dynamic
+128.59.199.46,dynamic
+128.59.199.47,dynamic
+128.59.199.48,dynamic
+128.59.199.49,dynamic
+128.59.199.50,dynamic
+128.59.199.51,dynamic
+128.59.199.52,dynamic
+128.59.199.53,dynamic
+128.59.199.54,dynamic
+128.59.199.55,dynamic
+128.59.199.56,dynamic
+128.59.199.57,dynamic
+128.59.199.58,dynamic
+128.59.199.59,dynamic
+128.59.199.60,dynamic
+128.59.199.61,dynamic
+128.59.199.62,dynamic
+128.59.199.63,dynamic
+128.59.199.64,dynamic
+128.59.199.65,dynamic
+128.59.199.66,dynamic
+128.59.199.67,dynamic
+128.59.199.68,dynamic
+128.59.199.69,dynamic
+128.59.199.70,dynamic
+128.59.199.71,dynamic
+128.59.199.72,dynamic
+128.59.199.73,dynamic
+128.59.199.74,dynamic
+128.59.199.75,dynamic
+128.59.199.76,dynamic
+128.59.199.77,dynamic
+128.59.199.78,dynamic
+128.59.199.79,dynamic
+128.59.199.80,dynamic
+128.59.199.81,dynamic
+128.59.199.82,dynamic
+128.59.199.83,dynamic
+128.59.199.84,dynamic
+128.59.199.85,dynamic
+128.59.199.86,dynamic
+128.59.199.87,dynamic
+128.59.199.88,dynamic
+128.59.199.89,dynamic
+128.59.199.90,dynamic
+128.59.199.91,dynamic
+128.59.199.92,dynamic
+128.59.199.93,dynamic
+128.59.199.94,dynamic
+128.59.199.95,dynamic
+128.59.199.96,dynamic
+128.59.199.97,dynamic
+128.59.199.98,dynamic
+128.59.199.99,dynamic
+128.59.199.100,dynamic
+128.59.199.101,dynamic
+128.59.199.102,dynamic
+128.59.199.103,dynamic
+128.59.199.104,dynamic
+128.59.199.105,dynamic
+128.59.199.106,dynamic
+128.59.199.107,dynamic
+128.59.199.108,dynamic
+128.59.199.109,dynamic
+128.59.199.110,dynamic
+128.59.199.111,dynamic
+128.59.199.112,dynamic
+128.59.199.113,dynamic
+128.59.199.114,dynamic
+128.59.199.115,dynamic
+128.59.199.116,dynamic
+128.59.199.117,dynamic
+128.59.199.118,dynamic
+128.59.199.119,dynamic
+128.59.199.120,dynamic
+128.59.199.121,dynamic
+128.59.199.122,dynamic
+128.59.199.123,dynamic
+128.59.199.124,dynamic
+128.59.199.125,dynamic
+128.59.199.126,dynamic
+128.59.199.127,dynamic
+128.59.199.128,dynamic
+128.59.199.129,dynamic
+128.59.199.130,dynamic
+128.59.199.131,dynamic
+128.59.199.132,dynamic
+128.59.199.133,dynamic
+128.59.199.134,dynamic
+128.59.199.135,dynamic
+128.59.199.136,dynamic
+128.59.199.137,dynamic
+128.59.199.138,dynamic
+128.59.199.139,dynamic
+128.59.199.140,dynamic
+128.59.199.141,dynamic
+128.59.199.142,dynamic
+128.59.199.143,dynamic
+128.59.199.144,dynamic
+128.59.199.145,dynamic
+128.59.199.146,dynamic
+128.59.199.147,dynamic
+128.59.199.148,dynamic
+128.59.199.149,dynamic
+128.59.199.150,dynamic
+128.59.199.151,dynamic
+128.59.199.152,dynamic
+128.59.199.153,dynamic
+128.59.199.154,dynamic
+128.59.199.155,dynamic
+128.59.199.156,dynamic
+128.59.199.157,dynamic
+128.59.199.158,dynamic
+128.59.199.159,dynamic
+128.59.199.160,dynamic
+128.59.199.161,dynamic
+128.59.199.162,dynamic
+128.59.199.163,dynamic
+128.59.199.164,dynamic
+128.59.199.165,dynamic
+128.59.199.166,dynamic
+128.59.199.167,dynamic
+128.59.199.168,dynamic
+128.59.199.169,dynamic
+128.59.199.170,dynamic
+128.59.199.171,dynamic
+128.59.199.172,dynamic
+128.59.199.173,dynamic
+128.59.199.174,dynamic
+128.59.199.175,dynamic
+128.59.199.176,dynamic
+128.59.199.177,dynamic
+128.59.199.178,dynamic
+128.59.199.179,dynamic
+128.59.199.180,dynamic
+128.59.199.181,dynamic
+128.59.199.182,dynamic
+128.59.199.183,dynamic
+128.59.199.184,dynamic
+128.59.199.185,dynamic
+128.59.199.186,dynamic
+128.59.199.187,dynamic
+128.59.199.188,dynamic
+128.59.199.189,dynamic
+128.59.199.190,dynamic
+128.59.199.191,dynamic
+128.59.199.192,dynamic,,,,,
+128.59.199.193,dynamic,,,,,
+128.59.199.194,dynamic,,,,,
+128.59.199.195,dynamic,,,,,
+128.59.199.196,dynamic,,,,,
+128.59.199.197,dynamic,,,,,
+128.59.199.198,dynamic,,,,,
+128.59.199.199,dynamic,,,,,
+128.59.199.200,static,,GBA,GBA,,Network Printer - GBA
+128.59.199.201,dynamic,,,,,
+128.59.199.202,dynamic,,,,,
+128.59.199.203,dynamic,,,,,
+128.59.199.204,dynamic,,,,,
+128.59.199.205,dynamic,,,,,
+128.59.199.206,dynamic,,,,,
+128.59.199.207,dynamic,,,,,
+128.59.199.208,dynamic
+128.59.199.209,dynamic
+128.59.199.210,dynamic
+128.59.199.211,dynamic
+128.59.199.212,dynamic
+128.59.199.213,dynamic
+128.59.199.214,dynamic
+128.59.199.215,dynamic
+128.59.199.216,dynamic
+128.59.199.217,dynamic
+128.59.199.218,dynamic
+128.59.199.219,dynamic
+128.59.199.220,dynamic
+128.59.199.221,dynamic
+128.59.199.222,dynamic
+128.59.199.223,dynamic
+128.59.199.224,dynamic
+128.59.199.225,dynamic
+128.59.199.226,dynamic
+128.59.199.227,dynamic
+128.59.199.228,dynamic
+128.59.199.229,dynamic
+128.59.199.230,dynamic
+128.59.199.231,dynamic
+128.59.199.232,dynamic
+128.59.199.233,dynamic
+128.59.199.234,dynamic
+128.59.199.235,dynamic
+128.59.199.236,dynamic
+128.59.199.237,dynamic
+128.59.199.238,dynamic
+128.59.199.239,dynamic
+128.59.199.240,dynamic,,,,,
+128.59.199.241,dynamic,,,,,
+128.59.199.242,dynamic,,,,,
+128.59.199.243,dynamic,,,,,
+128.59.199.244,dynamic,,,,,
+128.59.199.245,dynamic,,,,,
+128.59.199.246,free,,,,,
+128.59.199.247,static,,BridgeSwitch,cis,,Switch - Bridge Lab 302
+128.59.199.248,static,,SwitchRoom201,cis,,Switch - Serving Room201
+128.59.199.249,static,,,cis,,Switch
+128.59.199.250,static,,,cis,,Switch
+128.59.199.251,static,,Claven,cis,,Server - Claven.gsb.columbia.edu
+128.59.199.252,static,,,cis,,Switch
+128.59.199.253,static,,,cis,,Switch
+128.59.199.254,static,,,cis,,Switch
