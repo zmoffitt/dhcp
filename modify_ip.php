@@ -25,7 +25,7 @@ $management_of = "ip";
                     $.fancybox({
                         content: response,
                         width: 800,
-                        height: 650,
+                        height: 700,
                         fitToView: true,
                         autoSize: false,
                         autoDimensions: false,
@@ -50,7 +50,7 @@ $management_of = "ip";
         });
 	$(".fancybox").fancybox({
                         width: 800,
-                        height: 650,
+                        height: 700,
                         fitToView: true,
                         autoSize: false,
                         autoDimensions: false,
@@ -359,7 +359,10 @@ else{
 print "<fieldset class=\"form-group\"><div class=\"form-group\"><label class=\"col-xs-3 form-control-label\">Notes</label>\n";
 
 if ( (strcmp($action, "modify_ip") != 0) && ($access_level == $ADMIN) ){
-	print "<div class=\"col-xs-8\"><textarea class=\"form-control\" name=notes rows=4>$notes</textarea></div></div></fieldset>\n";
+	$date = date("Y-m-d");
+	$date = $date . ' at ' . date("H:i");
+	$notechop = array_shift(explode('   Last edit on', $notes));
+	print "<div class=\"col-xs-8\"><textarea class=\"form-control\" name=notes rows=4>$notechop \n\nLast edit on $date - $username</textarea></div></div></fieldset>\n";
 }
 
 else{

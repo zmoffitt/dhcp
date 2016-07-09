@@ -9,7 +9,7 @@
 $(document).ready(function() {
 	$(".various").fancybox({
 		width		: 800,
-		height		: 650,
+		height		: 700,
 		fitToView	: true,
 		autoSize	: false,
                 autoDimensions	: false,
@@ -137,6 +137,7 @@ if (! $result){
         }
 
 	$row = mysql_fetch_object($result);
+        $vlan = $row->vlan;
 	$subnet_notes = $row->notes;
 
 	// retrieve the IPs of the subnet requested
@@ -222,7 +223,7 @@ if (! $result){
 
 
 print "</div></div><div id=\"row\"><div class=\"col-md-12 col-md-offset-0\">\n";
-print "<div class=\"panel panel-default\"><div class=\"panel-heading text-center\"><h4>Subnet $subnet</h4><p class=\"text-muted\">$subnet_notes</p></div>\n";
+print "<div class=\"panel panel-default\"><div class=\"panel-heading text-center\"><h4>Subnet $subnet <small class=\"text-muted\">[VLAN: $vlan]</small></h4><h6 class=\"text-muted\">$subnet_notes</h6></div>\n";
 print "<div class=\"panel-body\">\n";
 print "<table class=\"table table-striped table-hover table-bordered table-condensed\" id=\"subnetList\">\n";
 print "<tr><th><b>IP Address</b></th>\n";

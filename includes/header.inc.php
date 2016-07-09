@@ -2,6 +2,7 @@
         include "config.inc.php";
         $auth_string = auth_string($username);
 	$activePage = basename($_SERVER['PHP_SELF'], ".php");
+	$mini = $_GET['q'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,7 +46,6 @@ background-color: #398439;
 background-color: #d58512;
 }
 </style>
-
 </head>
 <body>
 <?
@@ -53,7 +53,7 @@ background-color: #d58512;
                 print "<meta HTTP-EQUIV=Refresh content=$refresh_rate>\n";
         }
 ?>
-<? if ( !in_array($activePage, array('modify_ip','staff_modify','staff_delete'), true )) {
+<? if ( (!in_array($activePage, array('modify_ip','staff_modify','staff_delete'), true ) && empty($mini))) {
 ?>
 <nav class="navbar navbar-default">
   <div class="container-fluid"> 

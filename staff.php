@@ -33,9 +33,6 @@ $(document).ready(function() {
         });
         return false; // stop default submit event propagation
     }); 
-});
-
-$(document).ready(function() {
     $(".delete").submit(function() {
         $.fancybox.showLoading(); // start fancybox loading animation
         $.ajax({
@@ -61,29 +58,35 @@ $(document).ready(function() {
             }
         });
         return false; // stop default submit event propagation
-    }); 
+    });
+        $(".various").fancybox({
+                width           : 800,
+                height          : 650,
+                fitToView       : true,
+                autoSize        : false,
+                autoDimensions  : false,
+                autoSize        : false,
+                closeClick      : false,
+                openEffect      : 'none',
+                closeEffect     : 'none',
+                closeBtn        : false,
+                'afterClose': function () { parent.location.reload(true)},
+        }); 
 });
 </script>
-<h1>DHCP Manager - Staff Management</h1>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <h2 class="text-center">DHCP Manager - User Administration</h2>
+    </div>
+  </div>
+  <hr>
 <br>
 
 <?
-	if ($access_level == $ADMIN){
-?>
-	
-<center>
-<h3>
-
-<a href="#" onclick="window.open('staff_add.php?username=<? echo "$username"; ?>&token=<? echo "$token"; ?>', 'mac', 'width=<? echo $popup_width; ?>, height=<? echo $popup_height; ?>');">Add a Staff</a>
-
-</h3>
-</center>
-
-<?
+	if ($access_level == $ADMIN) {
+		print "<a href=\"staff_add.php?username=$username&token=$token\" class=\"various fancybox.ajax\">Add a Staff</a>\n";
 	}
-?>
-
-<?
 
         $id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
 
