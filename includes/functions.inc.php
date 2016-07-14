@@ -69,21 +69,21 @@ function staff_exist($host, $server, $staff){
         $result = mysql_db_query($db_name, $str_sql, $id_link);
 
         if (! $result){
-                print "Failed to submit!<br>\n";
-                include "$footer";
+		print $top;
+                print "Unable to submit to database: $server\n";
+		print $bottom;
                 exit;
         }
 
         $total_rows = mysql_num_rows($result);
 
         if ($total_rows > 0){
-
-                print "<center><table>\n";
-                print "<tr><td><font color=ff0000><b>Staff *$staff* existed in the database on server *$server* already!  If you want to add the staff to the other server(s), please go back and unselect server *$server*.</b></font></td></tr>\n";
-                print "</table></center>\n";
-                include "$footer";
-                exit;
-        }
+	
+	       print $top;
+	       print "The user $staff already exists in the database";
+	       print $bottom;
+	       exit;
+       } 
 
 }
 
@@ -411,8 +411,9 @@ function staff_delete($who, $ip_from, $host, $staff, $grp){
 	$result = mysql_db_query($db_name, $str_sql, $id_link);
 
 	if (! $result){
-		print "Failed to submit!<br>\n";
-		include "$footer";
+                print $top;
+                print "Unable to submit to database: $host\n";
+		print $bottom;
 		exit;
 	}
 
@@ -431,8 +432,9 @@ function staff_delete($who, $ip_from, $host, $staff, $grp){
 	$result = mysql_db_query($db_name, $str_sql, $id_link);
 
 	if (! $result){
-		print "Failed to submit log!<br>\n";
-		include "$footer";
+                print $top;
+                print "Unable to insert into table: $db_tablename_logs\n";
+                print $bottom;
 		exit;
 	}
 
@@ -499,8 +501,9 @@ function staff_modify($who, $ip_from, $host, $staff, $staff_old, $grp, $grp_old)
 	$result = mysql_db_query($db_name, $str_sql, $id_link);
 
 	if (! $result){
-		print "Failed to submit!<br>\n";
-		include "$footer";
+                print $top;
+                print "Unable to insert into database: $db_name\n";
+                print $bottom;
 		exit;
 	}
 
@@ -523,8 +526,9 @@ function staff_modify($who, $ip_from, $host, $staff, $staff_old, $grp, $grp_old)
 	$result = mysql_db_query($db_name, $str_sql, $id_link);
 
 	if (! $result){
-		print "Failed to submit log!<br>\n";
-		include "$footer";
+                print $top;
+                print "Unable to isert into table: $db_tablename_logs\n";
+                print $bottom;
 		exit;
 	}
 

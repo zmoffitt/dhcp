@@ -1,6 +1,31 @@
-<?
+<?php
+
+/**
+ * Main IP Management page for DHCP Management Console
+ * JS requested but not required - using it for form validation
+ *
+ * PHP version 5
+ *
+ * @category  PHP
+ * @package   PSI
+ * @author    Zachary Moffitt <zac@gsb.columbia.edu>
+ * @copyright 2016 Columbia Business School
+ */
+
+/*
+ * Configure information about the page
+ */
+
+        $pageTitle = "Search";
+
+
+/*
+ * initialize the includes for functions and generate the header
+ * use this in all front-end pages to ensure uniformity
+ */
         include "includes/authenticate.inc.php";
 	include "includes/config.inc.php";
+	require "includes/header.inc.php";
         $access_level = access_level($username);
 
 // here, the form is submitted.

@@ -29,7 +29,7 @@
                     $.fancybox({
                         content: response,
                         width: 800,
-                        height: 700,
+                        height: 990,
                         fitToView: true,
                         autoSize: false,
                         autoDimensions: false,
@@ -54,17 +54,22 @@
         });
     });
 </script>
+<? if (!$mini): ?>
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
-      <h2 class="text-center">DHCP Manager (Uris) - Subnet Management</h2>
+      <h3 class="text-center">DHCP Manager (Uris)<br /><small class="text-muted">Subnet Management</small></h3>
     </div>
   </div>
   <hr>
+
+<? include "includes/lease2name.inc.php"; ?>
+<? include "includes/subnets.inc.php"; ?>
+<br />
+<? endif; ?>
+
 <?
 
-	include "includes/lease2name.inc.php";
-	if (!$mini) { require "includes/subnets.inc.php"; print "<br>\n";}
 
 	if (strcmp($action, "modify_subnet") == 0){
 
@@ -77,7 +82,7 @@
 			$subnet = $default_subnet;
 		}
 
-		else if ($subnet == "192.168.190") {
+		else if ($subnet == "192.168.190" || $subnet == "10.252.0" || $subnet == "172.18.8" || $subnet == "172.18.0" || $subnet == "10.223.32" || $subnet == "172.18.4" || $subnet == "192.168.13") {
 			$subnet_full = $subnet . ".0";
 		}
 		else {
@@ -92,9 +97,7 @@
 	        $result = mysql_db_query($db_name, $str_sql, $id_link);
 
        		if (! $result){
-                	print "Failed to submit!<br>\n";
-	       	        include "$footer";
-        	       	exit;
+                	exit(print "Failed to submit!<br>\n");
 	        }
 
                 $datetime = date("Y-m-d H:i:s");
@@ -145,10 +148,9 @@
 
                 }
 
-		print "<center><font color=ff0000>\n";
-		print "<b>Changes have been applied to the Subnet Options.</b>\n";
-                print "<br><b><i><small>(Will Take Effect In About 1 Minute)</small></i></b>\n";
-		print "</font></center>\n";
+                print "<h3 class=\"text-center text-success\"><strong>Successfully updated</strong> <span class=\"label label-success\">subnet: $subnet_full</span></h3>\n";
+		print "<h5 class=\"text-center\">Will take effect in about 1 minute</h5>\n";
+                print "<hr />\n";
 		mark_update("localhost");
 
 	}
@@ -159,7 +161,7 @@
 	}
 
 	else{
-		if($subnet == "192.168.190") {
+                 if ($subnet == "192.168.190" || $subnet == "10.252.0" || $subnet == "172.18.8" || $subnet == "172.18.0" || $subnet == "10.223.32" || $subnet =="172.18.4" || $subnet == "192.168.13") {
 			$subnet_full = $subnet . ".0";
 		} else {
 			$subnet_full = $prefix . "." . $subnet . ".0";
@@ -188,8 +190,12 @@
 	$vlan = $row->vlan;
 	$notes = $row->notes;
 	$notes = trim($notes);
-	print "<div class=\"container-fluid\"><div class=\"row\">\n";
-	print "<div class=\"col-md-12\">\n";
+
+	if (strcmp($action, "modify_subnet") != 0) {
+	print "<div class=\"col-xs-6\" style=\"float: none; margin: 0 auto;\">\n";
+	} else {
+        print "<div class=\"col-xs-10\" style=\"float: none; margin: 0 auto;\">\n";
+	}
 	print "<form method=\"post\" action=\"modify_subnet.php?q=mini\" target=\"modify\" method=\"post\" class=\"form-horizontal modify\" role=\"form\" id=\"modify\">\n";
 	print "<input type=hidden name=action value=modify_subnet>\n";
 	print "<input type=hidden name=subnet value='$subnet'>\n";
@@ -199,115 +205,125 @@
 	print "<input type=hidden name=old_bootp value='$bootp'>\n";
 	print "<input type=hidden name=username value='$username'>\n";
 	print "<input type=hidden name=token value='$token'>\n";
-	
-	print "<div id=\"row\"><div class=\"col-md-6 col-md-offset-3\">\n";
-	print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">IP Address</label>\n";
-	print "<div class=\"col-md-4\"><div class=\"input-group\"><p \"form-control-static\" />$subnet_full</p></div></div></div></fieldset>\n";
+
+	if (!$mini) {
+                print "<div class=\"panel panel-default\">\n";
+		print "<div class=\"panel-heading\">";
+		print "<h4 class=\"panel-title strong\">$subnet_full Overview</h4>";
+		print "</div>\n";
+	        print "<div class=\"panel-body\" style=\"margin: 20px;\">\n";
+	}
+	print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">Subnet </label>\n";
+        if ( (strcmp($action, "modify_subnet") != 0) && ($access_level == $ADMIN) ) {
+                print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" name=\"subnet\" value=\"$subnet_full\" disabled /></div></div></fieldset>\n";
+        } else {
+		print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" name=\"subnet\" value=\"$subnet_full\" disabled /></div></div></fieldset>\n";
+        }
 
         print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">Notes</label>\n";
 
         if ( (strcmp($action, "modify_subnet") != 0) && ($access_level == $ADMIN) ){
-	        print "<div class=\"col-md-4\"><div class=\"input-group\"><textarea class=\"form-control\" name=notes rows=4>$notes</textarea></div></div></div></fieldset>\n";
+	        print "<div class=\"col-md-10\"><textarea class=\"form-control form-control-sm\" name=notes rows=4>$notes</textarea></div></div></fieldset>\n";
+	} else {
+                print "<div class=\"col-md-10\"><textarea class=\"form-control form-control-sm\" name=notes rows=4 disabled>$notes</textarea></div></div></fieldset>\n";
 	}
 
-	else { print "<div class=\"col-md-5\"><div class=\"input-group\"><p class=\"form-control-static\" />$notes</p></div></div></div></fieldset>\n"; }
+	print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">Netmask</label>\n";
+	print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"$mask\" disabled /></div></div></fieldset>\n";
 
-	print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-1 form-control-label\">Netmask</label>\n";
-        print "<div class=\"col-xs-8\"><div class=\"input-group\"><p class=\"form-control-static\" />$mask</p></div></div></div></fieldset>\n";
+        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">Gateway</label>\n";
+	print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"$router\" disabled /></div></div></fieldset>\n";
 
-        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-1 form-control-label\">Gateway</label>\n";
-        print "<div class=\"col-xs-8\"><div class=\"input-group\"><p class=\"form-control-static\" />$router</p></div></div></div></fieldset>\n";
+        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">Broadcast</label>\n";
+	print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"$broadcast\" disabled /></div></div></fieldset>\n";
 
-        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-1 form-control-label\">Broadcast</label>\n";
-        print "<div class=\"col-xs-8\"><div class=\"input-group\"><p class=\"form-control-static\" />$broadcast</p></div></div></div></fieldset>\n";
-
-        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-1 form-control-label\">Authoritative</label>\n";
-        print "<div class=\"col-xs-8\"><div class=\"input-group\"><p class=\"form-control-static\" />";
+        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">Authoritative</label>\n";
+        print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"";
 
 	if ($authoritative == 1) {print "Yes\n";} else {print "No";}
-	print "</p></div></div></div></fieldset>\n";
+	print "\" disabled></p></div></div></fieldset>\n";
 
-        print "<fieldset class=\"form-group\"><div class=\"form-group\"><label class=\"col-md-1 form-control-label\">VLAN ID</label>\n";
+        print "<fieldset class=\"form-group\"><div class=\"form-group\"><label class=\"col-md-2 form-control-label\">VLAN ID</label>\n";
 	if ( (strcmp($action, "modify_subnet") != 0) && ($access_level == $ADMIN) ) {
-        	print "<div class=\"col-xs-8\"><div class=\"input-group\"><input type=\"number\" class=\"form-control\" name=\"vlan\" value=\"$vlan\" /></div></div></div></fieldset>\n";
+        	print "<div class=\"col-md-10\"><input type=\"number\" class=\"form-control\" name=\"vlan\" value=\"$vlan\" /></div></div></fieldset>\n";
 	} else {
-		print "<div class=\"col-xs-8\"><div class=\"input-group\"><p \"form-control-static\" />$vlan</p></div></div></div></fieldset>\n";
+		print "<div class=\"col-md-10\"><input type=\"number\" class=\"form-control\" name=\"vlan\" value=\"$vlan\" disabled /></div></div></fieldset>\n";
 	}
 	
-        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-1 form-control-label\">Lease</label>\n";
+        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">Lease</label>\n";
 
         if ( (strcmp($action, "modify_subnet") != 0) && ($access_level == $ADMIN) ){
-		print "<div class=\"col-xs-8\"><div class=\"input-group\"><select name=lease>\n";
+		print "<div class=\"col-md-10\"><select name=lease>\n";
 		$tmp = "\$lease_$lease = SELECTED;";
 		eval("$tmp");
-		include "lease.inc.php";
-		print "</select></div></div></div></fieldset>\n";
+		include "includes/lease.inc.php";
+		print "</select></div></div></fieldset>\n";
 	}
 
 	else{
 		$lease_string = $lease2name["$lease"];
-		print "<td>$lease_string&nbsp;</td></tr>\n";
+                print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"$lease_string\" disabled /></div></div></fieldset>\n";
 	}
 
-        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-1 form-control-label\">MAC Authenticated</label>\n";
+        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">MAC Authenticated</label>\n";
 
         if ( (strcmp($action, "modify_subnet") != 0) && ($access_level == $ADMIN) ){
 
 		$tmp = "\$mac_auth_$mac_auth = SELECTED;";
 		eval("$tmp");
-		print "<div class=\"col-xs-8\"><div class=\"input-group\"><select name=mac_auth>\n";
+		print "<div class=\"col-md-10\"><select name=mac_auth>\n";
 		print "<option $mac_auth_0 value=0>No\n";
 		print "<option $mac_auth_1 value=1>Yes\n";
-		print "</select></div></div></div></fieldset>\n";
+		print "</select></div></div></fieldset>\n";
 
 	}
 
 	else{
 
 		if ($mac_auth == 1){
-			print "<div class=\"col-xs-8\"><div class=\"input-group\"><p \"form-control-static\" />ON</p></div></div></div></fieldset>\n";
+	                print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"yes\" disabled /></div></div></fieldset>\n";
 		}
 
 		else{
-			print "<div class=\"col-xs-8\"><div class=\"input-group\"><p \"form-control-static\" />OFF<</p></div></div></div></fieldset>\n";
+        	        print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"No\" disabled /></div></div></fieldset>\n";
 		}
 
 	}
 
-	print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-1 form-control-label\">BOOTP</label>\n";
+	print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">BOOTP</label>\n";
 
         if ( (strcmp($action, "modify_subnet") != 0) && ($access_level == $ADMIN) ){
 
 		$tmp = "\$bootp_$bootp = SELECTED;";
 		eval("$tmp");
-		print "<div class=\"col-md-4\"><div class=\"input-group\"><select name=bootp>\n";
+		print "<div class=\"col-md-4\"><select name=bootp>\n";
 		print "<option $bootp_0 value=0>No\n";
 		print "<option $bootp_1 value=1>Yes\n";
-		print "</select></div></div></div></fieldset>\n";
+		print "</select></div></div></fieldset>\n";
 
 	}
 
 	else{
 
 		if ($bootp == 1){
-                        print "<div class=\"col-xs-8\"><div class=\"input-group\"><p \"form-control-static\" />ON</p></div></div></div></fieldset>\n";
+                        print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"yes\" disabled /></div></div></fieldset>\n";
                 }
 
                 else{
-                        print "<div class=\"col-xs-8\"><div class=\"input-group\"><p \"form-control-static\" />OFF<</p></div></div></div></fieldset>\n";
+                        print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"No\" disabled /></div></div></fieldset>\n";
                 }
 	}
 
 	if ( (strcmp($action, "modify_subnet") != 0) && ($access_level == $ADMIN) ){
-                print "<fieldset class=\"form-group\"><div class=\"form-group text-center\">\n";
-	        print "<button name=\"modify\" id=\"load\" target=\"_parent\" type=\"submit\" class=\"btn btn-danger\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i> Saving...\">Modify Subnet Settings</button></fieldset>\n";
+                print "</div><div class=\"panel-footer\"><div class=\"form-group text-center\">\n";
+	        print "<button name=\"modify\" id=\"load\" target=\"_parent\" type=\"submit\" class=\"btn btn-danger\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i> Saving...\">Modify Subnet Settings</button></div></div>\n";
 	}
 
 	if ($mini) {
        		print "<div class=\"row\"><fieldset class=\"form-group\"><div class=\"form-group text-center\">\n";
-                print "<a href=\"\" class=\"btn btn-primary\" onclick=\"window.top.window.$.fancybox.close();\" ata-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i> Closing window...\">Close Window</a></fieldset>\n";
+                print "<a href=\"\" class=\"btn btn-primary\" onclick=\"window.top.window.$.fancybox.close();\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i> Closing window...\">Close Window</a></fieldset>\n";
         };
-	print "</form></div>\n";
+	print "</div></form></div>\n";
 	print "<br />\n";
 	if (!$mini) { include "$footer"; }
 

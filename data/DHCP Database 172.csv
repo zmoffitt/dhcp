@@ -1,0 +1,255 @@
+IP Address,IP Type,MAC Address,Host Name,User Full Name, Lease Time,Description
+128.59.172.1,static,,cis,cis,,Router
+128.59.172.2,static,,WWW_MY,cis,,Server - WWW_MY (Solaris)
+128.59.172.3,static,00:C0:4F:80:F9:5B,DEFIANT,cis,,Server - DEFIANT
+128.59.172.4,static,00:C0:4F:77:C7:39,PRINTERS,cis,,Server - PRINTERS
+128.59.172.5,static,00:08:C7:FA:B8:DE,PROMETEUS,cis,,Server - PROMETHEUS
+128.59.172.6,static,,WWW_YOUR,cis,,Server - WWW_YOUR (Solaris)
+128.59.172.7,static,,TOLGA,cis,,test machine
+128.59.172.8,static,00:A0:C9:E1:C3:EC,SELENA,cis,,Server - SELENA
+128.59.172.9,static,08:00:3E:27:B0:FA,citi_xerox,citi,,Network Printer - CITI_XEROX (Xerox)
+128.59.172.10,static,08:00:09:8F:F1:A1,citi_1,citi,,Network Printer - CITI_1 (HP)
+128.59.172.11,static,,,Ed Folley,,Server - SQL test machine
+128.59.172.12,static,,,Ed Folley,,Server - SQL test machine
+128.59.172.13,free,,,,,
+128.59.172.14,free,,,,,
+128.59.172.15,reserved,00:C0:4F:41:02:23,matt,Matt Bologna,,Desktop - Linux Machine
+128.59.172.16,reserved,00:B0:D0:7E:25:19,hs765,Howie Southworth,,Desktop
+128.59.172.17,reserved,00:B0:D0:CC:04:41,dmr68,Dan Rosenblum,,Desktop
+128.59.172.18,reserved,00:C0:4F:59:52:4B,bc212,Benny Chang,,Desktop
+128.59.172.19,static,,Ed Folley,Ed Folley,,Server - Novell test machine
+128.59.172.20,static,,tolga,Tolga Ergunay,,Desktop
+128.59.172.21,dynamic,,,,,
+128.59.172.22,dynamic,,,,,
+128.59.172.23,dynamic,,,,,
+128.59.172.24,dynamic,,,,,
+128.59.172.25,dynamic,,,,,
+128.59.172.26,dynamic,,,,,
+128.59.172.27,dynamic,,,,,
+128.59.172.28,reserved,00:E0:DB:01:16:1A,multimedia,multimedia,,MultiMedia equipment ????
+128.59.172.29,dynamic,,,,,
+128.59.172.30,dynamic,,,,,
+128.59.172.31,dynamic,,,,,
+128.59.172.32,dynamic,,,,,
+128.59.172.33,dynamic,,,,,
+128.59.172.34,static,00:30:C1:60:50:CB,phd_4th,Phd Office,,Network Printer - PHD_4TH
+128.59.172.35,static,00:30:C1:AC:33:4D,phd_5th,Phd Office,,Network Printer - PHD_5TH
+128.59.172.36,static,00:30:C1:AC:43:8D,phd_6th,Phd Office,,"Network Printer - PHD_6TH (IP not in use, using 215.xxx - SOON TO BE USED)"
+128.59.172.37,static,00:30:C1:8F:C7:AB,phd_7th,Phd Office,,Network Printer - PHD_7TH
+128.59.172.38,dynamic,,,,,
+128.59.172.39,static,,solaris,cis,,solaris ????
+128.59.172.40,dynamic,,,,,
+128.59.172.41,dynamic,,,,,
+128.59.172.42,static,,solaris,cis,,solaris ????
+128.59.172.43,dynamic,,,,,
+128.59.172.44,dynamic,,,,,
+128.59.172.45,dynamic,,,,,
+128.59.172.46,static,,solaris,cis,,solaris ????
+128.59.172.47,dynamic,,,,,
+128.59.172.48,static,08:00:09:5F:6F:2E,CIS_EPSON,cis,,Network Printer - CIS_EPSON
+128.59.172.49,dynamic,,,,,
+128.59.172.50,dynamic,,,,,
+128.59.172.51,dynamic,,,,,
+128.59.172.52,dynamic,,,,,
+128.59.172.53,static,,nautilus,cis,,Server - NAUTILUS
+128.59.172.54,dynamic,,,,,
+128.59.172.55,dynamic,,,,,
+128.59.172.56,dynamic,,,,,
+128.59.172.57,dynamic,,,,,
+128.59.172.58,dynamic,,,,,
+128.59.172.59,dynamic,,,,,
+128.59.172.60,dynamic,,,,,
+128.59.172.61,dynamic,,,,,
+128.59.172.62,dynamic,,,,,
+128.59.172.63,dynamic,,,,,
+128.59.172.64,dynamic
+128.59.172.65,dynamic
+128.59.172.66,dynamic
+128.59.172.67,dynamic
+128.59.172.68,dynamic
+128.59.172.69,dynamic
+128.59.172.70,dynamic
+128.59.172.71,dynamic
+128.59.172.72,dynamic
+128.59.172.73,dynamic
+128.59.172.74,dynamic
+128.59.172.75,dynamic
+128.59.172.76,dynamic
+128.59.172.77,dynamic
+128.59.172.78,dynamic
+128.59.172.79,dynamic
+128.59.172.80,dynamic
+128.59.172.81,dynamic
+128.59.172.82,dynamic
+128.59.172.83,dynamic
+128.59.172.84,dynamic
+128.59.172.85,dynamic
+128.59.172.86,dynamic
+128.59.172.87,dynamic
+128.59.172.88,dynamic
+128.59.172.89,dynamic
+128.59.172.90,dynamic
+128.59.172.91,dynamic
+128.59.172.92,dynamic
+128.59.172.93,dynamic
+128.59.172.94,dynamic
+128.59.172.95,dynamic
+128.59.172.96,dynamic,,,,,
+128.59.172.97,dynamic,,,,,
+128.59.172.98,dynamic,,,,,
+128.59.172.99,dynamic,,,,,
+128.59.172.100,static,00:B0:D0:EA:15:B3,minerva,cis,,Server - MINERVA (Dell)
+128.59.172.101,dynamic,,,,,
+128.59.172.102,dynamic,,,,,
+128.59.172.103,dynamic,,,,,
+128.59.172.104,dynamic,,,,,
+128.59.172.105,dynamic,,,,,
+128.59.172.106,dynamic,,,,,
+128.59.172.107,dynamic,,,,,
+128.59.172.108,dynamic,,,,,
+128.59.172.109,dynamic,,,,,
+128.59.172.110,dynamic,,,,,
+128.59.172.111,dynamic,,,,,
+128.59.172.112,dynamic
+128.59.172.113,dynamic
+128.59.172.114,dynamic
+128.59.172.115,dynamic
+128.59.172.116,dynamic
+128.59.172.117,dynamic
+128.59.172.118,dynamic
+128.59.172.119,dynamic
+128.59.172.120,dynamic
+128.59.172.121,dynamic
+128.59.172.122,dynamic
+128.59.172.123,dynamic
+128.59.172.124,dynamic
+128.59.172.125,dynamic
+128.59.172.126,dynamic
+128.59.172.127,dynamic
+128.59.172.128,dynamic
+128.59.172.129,dynamic
+128.59.172.130,dynamic
+128.59.172.131,dynamic
+128.59.172.132,dynamic
+128.59.172.133,dynamic
+128.59.172.134,dynamic
+128.59.172.135,dynamic
+128.59.172.136,dynamic
+128.59.172.137,dynamic
+128.59.172.138,dynamic
+128.59.172.139,dynamic
+128.59.172.140,dynamic
+128.59.172.141,dynamic
+128.59.172.142,dynamic
+128.59.172.143,dynamic
+128.59.172.144,dynamic
+128.59.172.145,dynamic
+128.59.172.146,dynamic
+128.59.172.147,dynamic
+128.59.172.148,dynamic
+128.59.172.149,dynamic
+128.59.172.150,dynamic
+128.59.172.151,dynamic
+128.59.172.152,dynamic
+128.59.172.153,dynamic
+128.59.172.154,dynamic
+128.59.172.155,dynamic
+128.59.172.156,dynamic
+128.59.172.157,dynamic
+128.59.172.158,dynamic
+128.59.172.159,dynamic
+128.59.172.160,dynamic
+128.59.172.161,dynamic
+128.59.172.162,dynamic
+128.59.172.163,dynamic
+128.59.172.164,dynamic
+128.59.172.165,dynamic
+128.59.172.166,dynamic
+128.59.172.167,dynamic
+128.59.172.168,dynamic
+128.59.172.169,dynamic
+128.59.172.170,dynamic
+128.59.172.171,dynamic
+128.59.172.172,dynamic
+128.59.172.173,dynamic
+128.59.172.174,dynamic
+128.59.172.175,dynamic
+128.59.172.176,dynamic
+128.59.172.177,dynamic
+128.59.172.178,dynamic
+128.59.172.179,dynamic
+128.59.172.180,dynamic
+128.59.172.181,dynamic
+128.59.172.182,dynamic
+128.59.172.183,dynamic
+128.59.172.184,dynamic
+128.59.172.185,dynamic
+128.59.172.186,dynamic
+128.59.172.187,dynamic
+128.59.172.188,dynamic
+128.59.172.189,dynamic
+128.59.172.190,dynamic
+128.59.172.191,dynamic
+128.59.172.192,dynamic
+128.59.172.193,dynamic
+128.59.172.194,dynamic
+128.59.172.195,dynamic
+128.59.172.196,dynamic
+128.59.172.197,dynamic
+128.59.172.198,dynamic
+128.59.172.199,dynamic
+128.59.172.200,dynamic
+128.59.172.201,dynamic
+128.59.172.202,dynamic
+128.59.172.203,dynamic
+128.59.172.204,dynamic
+128.59.172.205,dynamic
+128.59.172.206,dynamic
+128.59.172.207,dynamic
+128.59.172.208,dynamic,,,,,
+128.59.172.209,dynamic,,,,,
+128.59.172.210,static,00:40:8C:58:E7:C4,LL_Web_Cam,cis,,Web Camera
+128.59.172.211,dynamic,,,,,
+128.59.172.212,dynamic,,,,,
+128.59.172.213,dynamic,,,,,
+128.59.172.214,dynamic,,,,,
+128.59.172.215,dynamic,,,,,
+128.59.172.216,dynamic,,,,,
+128.59.172.217,dynamic,,,,,
+128.59.172.218,dynamic,,,,,
+128.59.172.219,dynamic,,,,,
+128.59.172.220,dynamic,,,,,
+128.59.172.221,dynamic,,,,,
+128.59.172.222,dynamic,,,,,
+128.59.172.223,dynamic,,,,,
+128.59.172.224,dynamic
+128.59.172.225,dynamic
+128.59.172.226,dynamic
+128.59.172.227,dynamic
+128.59.172.228,dynamic
+128.59.172.229,dynamic
+128.59.172.230,dynamic
+128.59.172.231,dynamic
+128.59.172.232,dynamic
+128.59.172.233,dynamic
+128.59.172.234,dynamic
+128.59.172.235,dynamic
+128.59.172.236,dynamic
+128.59.172.237,dynamic
+128.59.172.238,dynamic
+128.59.172.239,dynamic
+128.59.172.240,dynamic,,,,,
+128.59.172.241,dynamic,,,,,
+128.59.172.242,dynamic,,,,,
+128.59.172.243,dynamic,,,,,
+128.59.172.244,dynamic,,,,,
+128.59.172.245,dynamic,,,,,
+128.59.172.246,free,,,,,
+128.59.172.247,free,,,,,
+128.59.172.248,free,,,,,
+128.59.172.249,static,,switch,cis,,Switch
+128.59.172.250,free,,,,,
+128.59.172.251,static,,switch,cis,,Switch
+128.59.172.252,free,,,,,
+128.59.172.253,static,,switch,cis,,switch
+128.59.172.254,static,,switch,cis,,switch

@@ -87,4 +87,9 @@
 	$ADMIN = 0;
 	$READ = 1;
 
+	// standard error formatting
+	$errorHeader = "<h1 class=\"text-danger\">:( <small class=\"text-danger text-muted\">An error occured</small></h1>";
+
+	$top = "<div class=\"panel panel-danger\"><div class=\"panel-heading\" role=\"alert\"><strong>Message: </strong></div><div class=\"panel-body panel-danger\"><samp>";
+        $bottom = "</sapm></div></div><div class=\"row text-center\"><button type=\"button\" class=\"btn btn-danger\" data-dismiss=\"modal\">Close window</button></div>";
 ?>

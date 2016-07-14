@@ -1,19 +1,36 @@
-<?
+<?php
+
+/**
+ * Login page for DHCP Management Console
+ * JS requested but not required - using it for form validation
+ *
+ * PHP version 5
+ *
+ * @category  PHP
+ * @package   PSI
+ * @author    Zachary Moffitt <zac@gsb.columbia.edu>
+ * @copyright 2016 Columbia Business School
+ */
+
+/*
+ * initialize the includes for functions and generate the header
+ * use this in all front-end pages to ensure uniformity
+ */
+
         include "includes/authenticate.inc.php";
         include "includes/config.inc.php";
+	require "includes/header.inc.php";
         $access_level = access_level($username);
         $who = $username;
 ?>
 
-<title>DHCP Manager</title>
-<center>
-<font color=0000ff>
-<h1>DHCP Manager - Global Options</h1>
-</font>
-<? include "links.inc.php"; ?>
-</center>
-<br>
-
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <h3 class="text-center">DHCP Manager<br /><small class="text-muted">Global Configuration</small></h3>
+    </div>
+  </div>
+  <hr>
 <? 
 
 	if (strcmp($action, "modify_global") == 0){
@@ -31,7 +48,6 @@
 	        $id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
        		$str_sql = "UPDATE $db_tablename_global set dns_1='$dns_1', dns_2='$dns_2', dns_3='$dns_3', dns_4='$dns_4', dns_5='$dns_5', wins_1='$wins_1', wins_2='$wins_2' WHERE id=1";
 
-//		print "Query: *$str_sql*<br>\n";
 
 	        $result = mysql_db_query($db_name, $str_sql, $id_link);
 
@@ -79,7 +95,6 @@
                 if ($changes){
                         $str_sql = "INSERT INTO $db_tablename_logs (who, ip, category, changes, datetime) VALUES ('$who', '$ip_from', 'global', '$changes', '$datetime')";
 
-//			print "Changes: *$changes*<br>\n";
 
 	                $result = mysql_db_query($db_name, $str_sql, $id_link);
 

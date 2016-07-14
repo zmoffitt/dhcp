@@ -1,134 +1,146 @@
-<?
-include "includes/authenticate.inc.php";
-include "includes/config.inc.php";
-$access_level = access_level($username);
-$who = $username;
-$management_of = "ip";
-?>
-<?php include "includes/header.inc.php"; ?>
-<script type="text/javascript">
-    $('.btn').on('click', function() {
-        var $this = $(this);
-        $this.button('loading');
-        setTimeout(function() {
-            $this.button('reset');
-        }, 1000);
-    });
+<?php
 
-    $(document).ready(function() {
-        $(".modify").submit(function() {
-            $.ajax({
-                data: $(this).serialize(), // get the form data
-                type: $(this).attr('method'), // GET or POST
-                url: $(this).attr('action'), // the file to call
-                success: function(response) { // on success..
-                    $.fancybox({
-                        content: response,
-                        width: 800,
-                        height: 700,
-                        fitToView: true,
-                        autoSize: false,
-                        autoDimensions: false,
-                        type: 'ajax',
-                        autoSize: false,
-                        closeClick: false,
-                        openEffect: 'none',
-                        closeEffect: 'none',
-                        closeBtn: false,
-                    'afterClose': function () { parent.location.reload(true)},
-                        helpers: {
-                            overlay: {
-                                css: {
-                                    'background': 'rgba(255, 255, 255, 0)'
-                                }
-                            }
-                        }
-                    });
-                },
-            });
-            return false; // stop default submit event propagation
-        });
-	$(".fancybox").fancybox({
-                        width: 800,
-                        height: 700,
-                        fitToView: true,
-                        autoSize: false,
-                        autoDimensions: false,
-                        autoSize: false,
-                        closeClick: false,
-                        openEffect: 'none',
-                        closeEffect: 'none',
-                        closeBtn: false,
-                    'afterClose': function () { parent.location.reload(true)},
-                        helpers: {
-                            overlay: {
-                                css: {
-                                    'background': 'rgba(255, 255, 255, 0)'
-                                }
-                            }
-                        }
-                    });
-            return false; // stop default submit event propagation
+/**
+ * IP information management page for DHCP Management Console
+ * JS requested but not required - using it for form validation
+ *
+ * PHP version 5
+ *
+ * @category  PHP
+ * @package   PSI
+ * @author    Zachary Moffitt <zac@gsb.columbia.edu>
+ * @copyright 2016 Columbia Business School
+ */
+
+/*
+ * initialize the includes for functions and generate the header
+ * use this in all front-end pages to ensure uniformity
+ */
+	include "includes/authenticate.inc.php";
+	include "includes/config.inc.php";
+	include "includes/lease2name.inc.php";
+	include "includes/header.inc.php";
+	$access_level = access_level($username);
+	$who = $username;
+	$management_of = "ip";
+
+?>
+<script type="text/javascript">
+$('.btn').on('click', function() {
+    var $this = $(this);
+  $this.button('loading');
+    setTimeout(function() {
+       $this.button('reset');
+   }, 1000);
+});
+
+  $(document).ready(function() {
+    $(".modify").submit(function() {
+      $.ajax({
+        data: $(this).serialize(), // get the form data
+        type: $(this).attr('method'), // GET or POST
+        url: $(this).attr('action'), // the file to call
+        success: function(response) { // on success..
+          $.fancybox({
+            content: response,
+            width: 800,
+            height: 700,
+            fitToView: true,
+            autoSize: false,
+            autoDimensions: false,
+            type: 'ajax',
+            autoSize: false,
+            closeClick: false,
+            openEffect: 'none',
+            closeEffect: 'none',
+            closeBtn: false,
+            'afterClose': function() {
+              parent.location.reload(true)
+            },
+            helpers: {
+              overlay: {
+                css: {
+                  'background': 'rgba(255, 255, 255, 0)'
+                }
+              }
+            }
+          });
+        },
+      });
+      return false; // stop default submit event propagation
     });
+    $(".fancybox").fancybox({
+      width: 800,
+      height: 700,
+      fitToView: true,
+      autoSize: false,
+      autoDimensions: false,
+      autoSize: false,
+      closeClick: false,
+      openEffect: 'none',
+      closeEffect: 'none',
+      closeBtn: false,
+      'afterClose': function() {
+        parent.location.reload(true)
+      },
+      helpers: {
+        overlay: {
+          css: {
+            'background': 'rgba(255, 255, 255, 0)'
+          }
+        }
+      }
+    });
+    return false; // stop default submit event propagation
+  });
 </script>
 <div class="container-fluid">
 <div class="row">
 </div>
 <? 
 
-include "includes/config.inc.php";
-include "includes/lease2name.inc.php";
-
 $id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
 
-if (strcmp($action, "modify_ip") == 0){
+if (strcmp($action, "modify_ip") == 0) {
 
-	// make sure it's an administrator
-	include "includes/admin_check.inc.php";
+        // make sure it's an administrator
+        include "includes/admin_check.inc.php";
 
-	// check if the IP address is static/reserved, or is in use.
-	// only check check when $ip is different from $old_ip
-	if (strcmp($ip, $old_ip) != 0){
-		ip_in_use($ip);
-	}
+        // check if the IP address is static/reserved, or is in use.
+        // only check check when $ip is different from $old_ip
+        if (strcmp($ip, $old_ip) != 0) {
+          ip_in_use($ip);
+        }
 
-	// check mac for right format ONLY if ip_type is 'reserved'
-	if (strcmp($ip_type, "reserved") == 0){
-		check_mac_format($mac);
-	}
+        // check mac for right format ONLY if ip_type is 'reserved'
+        if (strcmp($ip_type, "reserved") == 0) {
+          check_mac_format($mac);
+        }
 
-	// check computername for right format ONLY if ip_type is 'reserved' or 'static'.  Also, make sure computername & mac are NOT empty
+        // check computername for right format ONLY if ip_type is 'reserved' or 'static'.  Also, make sure computername & mac are NOT empty
+        if ((strcmp($ip_type, "reserved") == 0) || (strcmp($ip_type, "static") == 0)) {
+          check_computername_format($user);
 
-	if ( (strcmp($ip_type, "reserved") == 0) || (strcmp($ip_type, "static") == 0) ){
-		check_computername_format($user);
-
-		if (! $user || ! $mac){
-			print "<center><font color=ff0000>\n";
-			print "<b>Computer Name and MAC are required for Reserved and Static IPs!</b>\n";
-			print "</font></center>\n";
-			include "$footer";
-			exit;
-		}			
-	}	
-
+          if (!$user || !$mac) {
+            exit(print "<b>Computer Name and MAC are required for Reserved and Static IPs!</b>\n");
+          }
+        }
 	// replace \n or \r with space. otherwise, some comments will become invalid statements in /etc/dhcpd.conf
 	$notes = ereg_replace("[\n\r]", " ", $notes);
 
 	// update the ip record
-	if (strcmp($ip_type, "dynamic") == 0){
+	if (strcmp($ip_type, "dynamic") == 0) {
 		$str_sql = "UPDATE $db_tablename_ip set username='', ip_type='$ip_type', lease='0', clientname='', mac='', notes='' WHERE ip='$ip'";
 	}
 
-	else{
+	else {
 		$str_sql = "UPDATE $db_tablename_ip set username='$user', ip_type='$ip_type', lease='$lease', clientname='$clientname', mac='$mac', notes='$notes', lastUpdated='$username' WHERE ip='$ip'";
 	}
 
 	$result = mysql_db_query($db_name, $str_sql, $id_link);
 
 	if (! $result){
-		print "Failed to submit!<br>\n";
-		include "$footer";
-		exit;
+		exit(print "Failed to save to DB!<br>\n");
 	}
 
 	$datetime = date("Y-m-d H:i:s");
@@ -180,9 +192,7 @@ if (strcmp($action, "modify_ip") == 0){
 		$result = mysql_db_query($db_name, $str_sql, $id_link);
 
 		if (! $result){
-			print "Failed to submit log!<br>\n";
-			include "$footer";
-			exit;
+			exit(print "Failed to submit log!\n");
 		}
 
 	}
@@ -195,16 +205,23 @@ if (strcmp($action, "modify_ip") == 0){
 		$result = mysql_db_query($db_name, $str_sql, $id_link);
 
 		if (! $result){
-			print "Failed to submit!<br>\n";
-			include "$footer";
-			exit;
+			exit(print "Failed to save to the DB!<br />\n");
 		}
 
 	}
 
-        print "<h3 class=\"text-center text-success\"><strong>Successfully updated</strong> <span class=\"label label-success\">$ip</span></h3>\n";
-	print "<hr />\n";
-	mark_update("localhost");
+	$str_sql = "SELECT * FROM $db_tablename_ip WHERE ip='$ip'";
+	$result = mysql_db_query($db_name, $str_sql, $id_link);
+	$total_rows = mysql_num_rows($result);
+
+	if ($isDone != 'yes' || $total_rows == 0) {
+                print "<h3 class=\"text-center text-danger\"><strong>Failed to update</strong> <span class=\"label label-danger\">$ip</span></h3>\n";
+                print "<hr />\n";
+	} else {
+                print "<h3 class=\"text-center text-success\"><strong>Successfully updated</strong> <span class=\"label label-success\">$ip</span></h3>\n";
+                print "<hr />\n";
+                mark_update("localhost");
+	}
 
 }
 
@@ -223,19 +240,17 @@ if (! $result){
 $total_rows = mysql_num_rows($result);
 
 if ($total_rows == 0){
-	print "<center>\n";
-	print "<font color=ff0000>\n";
-	print "<b>Not a valid IP on this subnet!</b><br>\n";
-	print "</font>\n";
-	print "</center>\n";
-	include "$footer";
+	print "<h4 class=\"text-center text-danger\">Error: Not a valid IP on this subnet!</h4><br>\n";
+        print "<fieldset class=\"form-group\"><div class=\"form-group text-center\">\n";
+        print "<a href=\"\" class=\"btn btn-primary\" onclick=\"window.top.window.$.fancybox.close();\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i> Closing window...\">Close Window</a></fieldset>\n";
 	exit;
 }
 
 if ($isDone != 'yes') {
 	print "<h3 class=\"text-center\">Editing configuration for <span class=\"label label-default\">$ip</span></h3>\n";
 	print "<hr />\n";
-} 
+}
+
 print "<div class=\"container-fluid\"><div class=\"row\">\n";
 print "<div class=\"col-md-12\">\n";
 print "<form method=\"post\" action=\"modify_ip.php\" target=\"modify\" method=\"post\" class=\"form-horizontal modify\" role=\"form\" id=\"modify\">\n";
@@ -286,9 +301,9 @@ if ($switch_ip == 1){
 }
 
 else {
-	print "<fieldset class=\"form-group\"><div class=\"form-group\"><label class=\"col-xs-3 form-control-label\">IP Address</label><div class=\"col-xs-8\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" name=\"ip\" placeholder=\"$ip\" disabled />";
+	print "<fieldset class=\"form-group\"><div class=\"form-group\"><label class=\"col-xs-3 form-control-label\">IP Address</label><div class=\"col-xs-8\"><div class=\"input-group\"><input type=\"text\" class=\"form-control\" name=\"ip\" placeholder=\"$ip\" readonly/>";
 	print "<input type=hidden name=ip value=$ip>\n";
-	if (strcmp($action, "modify_ip") != 0){
+	if ( (strcmp($action, "modify_ip") != 0) && ($access_level == $ADMIN)){
 		print "<span class=\"input-group-btn\"><a href=\"modify_ip.php?ip=$ip&username=$username&token=$token&switch_ip=1\" class=\"btn btn-primary fancybox fancybox.ajax\" role=\"submit\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i> Unlocking...\">Edit</a></span>\n";
 	} else {
 		print "<span class=\"input-group-addon\"><span class=\"glyphicon glyphicon-saved\"></span></span>\n";
@@ -311,7 +326,7 @@ if ( (strcmp($action, "modify_ip") != 0) && ($access_level == $ADMIN) ){
 	print "<div class=\"col-xs-8\"><select class=\"form-control\" name=\"ip_type\">\n";
 	$tmp = "\$ip_type_$ip_type = SELECTED;";
 	eval("$tmp");
-	include "ip_type.inc.php";
+	include "includes/ip_type.inc.php";
 	print "</select></div></div></fieldset>\n";
 }
 
@@ -326,7 +341,7 @@ if ( (strcmp($action, "modify_ip") != 0) && ($access_level == $ADMIN) ){
 
 	$tmp = "\$lease_$lease = SELECTED;";
 	eval("$tmp");
-	include "lease.inc.php";
+	include "includes/lease.inc.php";
 	print "</select></div></div></fieldset>\n";
 
 }
@@ -384,36 +399,36 @@ if (strcmp($action, "modify_ip") == 0){
 ?>
 <script>
 $(document).ready(function() {
-		$('#updateForm').formValidation({
-framework: 'bootstrap',
-icon: {
-valid: 'glyphicon glyphicon-ok',
-invalid: 'glyphicon glyphicon-remove',
-validating: 'glyphicon glyphicon-refresh'
-},
-fields: {
-ip: {
-validators: {
-notEmpty: {
-message: 'The IP address is required'
-},
-ip: {
-message: 'Please enter a valid IP address'
-}
-}
-},
-mac: {
-enabled: false,
-validators: {
-notEmpty: {
-message: 'The MAC address is required'
-	  },
-mac: {
-message: 'Please enter a valid MAC Address'
-     }
-}
-}
-}
-});
+  $('#modify').formValidation({
+    framework: 'bootstrap',
+    icon: {
+      valid: 'glyphicon glyphicon-ok',
+      invalid: 'glyphicon glyphicon-remove',
+      validating: 'glyphicon glyphicon-refresh'
+    },
+    fields: {
+      ip: {
+        validators: {
+          notEmpty: {
+            message: 'The IP address is required'
+          },
+          ip: {
+            message: 'Please enter a valid IP address'
+          }
+        }
+      },
+      mac: {
+        enabled: false,
+        validators: {
+          notEmpty: {
+            message: 'The MAC address is required'
+          },
+          mac: {
+            message: 'Please enter a valid MAC Address'
+          }
+        }
+      }
+    }
+  });
 });
 </script>

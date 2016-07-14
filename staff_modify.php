@@ -5,40 +5,6 @@
 	$who = $username;
 ?>
 <?php include "includes/header.inc.php"; ?>
-<script type="text/javascript">
-$(document).ready(function() {
-                $(".modify").submit(function() {
-                                $.ajax({        
-data: $(this).serialize(), // get the form data
-type: $(this).attr('method'), // GET or POST
-url: $(this).attr('action'), // the file to call
-success: function(response) { // on success..
-$.fancybox({
-content : response,
-width:'450',
-height: '310',
-fitToView       : true,
-autoSize        : false,
-autoDimensions  : false,
-type            : 'ajax', 
-autoSize        : false,
-closeClick      : false,
-openEffect      : 'none',
-closeEffect     : 'none',
-closeBtn        : false,
-helpers:
-{       
-overlay:
-{
-css: { 'background': 'rgba(255, 255, 255, 0)' }
-}
-}});     
-},  
-        });     
-return false; // stop default submit event propagation
-});         
-});
-</script>
 <? 
 
 	$id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
@@ -64,13 +30,9 @@ return false; // stop default submit event propagation
 
                 }
 
-		print "<center>\n";
-		print "<font color=ff0000>\n";
-		print "<h3>Staff record for *$staff* updated!</h3>\n";
-                print "<b><i><small>(Will Take Effect Immediately)</small></i></b>\n";
-		print "</font>\n";
-		print "</center>\n";
-
+print "<hr />";
+print "<h3 class=\"text-center text-success\"><i class=\"fa fa-check-circle\" aria-hidden=\"true\"></i> Successfully updated: $staff</h3>\n";
+print "<button type=\"button\" id=\"complete\" class=\"btn btn-success btn-block\" data-dismiss=\"modal\">Close</button></div>\n";
 	}
 	
 	else{
@@ -79,15 +41,15 @@ return false; // stop default submit event propagation
 
 	        $result = mysql_db_query($db_name, $str_sql, $id_link);
 	       	if (! $result){
-       		        print "Failed to submit!<br>\n";
-        		include "$footer";
+                print $top;
+                print "Unable to insert into table: $db_tablename_logs\n";
+                print $bottom;
               		exit;	
        		}	
 
 	        $row = mysql_fetch_object($result);
-                print "<h4 class=\"text-center\">Editing User \"$staff\"</h4><hr />\n";
-		print "<div class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12 center-block\" style=\"float:none\">\n";
-		print "<form method=\"post\" action=\"staff_modify.php\" target=\"modify\" method=\"post\" class=\"form-horizontal modify\" role=\"form\" id=\"modify\">\n";
+		print "<div id=\"body\" class=\"container-fluid\"><div class=\"row\"><div class=\"col-xs-12 center-block\" style=\"float:none\">\n";
+		print "<form data-async data-target=\"#myModal\" method=\"post\" action=\"staff_modify.php\" target=\"modify\" method=\"post\" class=\"form-horizontal modify\" role=\"form\" id=\"modify\">\n";
                 print "<input type=hidden name=action value=modify>\n";
                 print "<input type=hidden name=username value=$username>\n";
                 print "<input type=hidden name=token value=$token>\n";
@@ -120,8 +82,9 @@ return false; // stop default submit event propagation
 
                 }
 		print "</div></div>\n";
-		print "<div class=\"form-group row text-center\">\n";
-	        print "<button name=\"modify\" target=\"_parent\" type=\"submit\" class=\"btn btn-primary\">Modify $staff</button></div>\n";
+		print "<div id=\"doSubmitConfirm\" class=\"form-group row text-center\">\n";
+		print "<button name=\"cancel\" type=\"button\" class=\"btn btn-secondary\" data-dismiss=\"modal\">Close</button>\n";
+	        print "<button name=\"modify\" type=\"submit\" class=\"btn btn-warning\">Modify $staff</button></div>\n";
 
                 print "</form>\n";
 		print "<br>\n";
@@ -129,3 +92,37 @@ return false; // stop default submit event propagation
 	}
 
 ?>
+
+<script>
+$(document).ready(function() {
+jQuery(function() {
+    $('form[data-async]').on('submit', function(event) {
+        event.preventDefault()
+        var $form = $(this);
+
+    if ( $(this).data('requestRunning') ) {
+        return;
+    }
+
+    $(this).data('requestRunning', true);
+
+        $.ajax({
+            type: $form.attr('method'),
+            url: $form.attr('action'),
+            data: $form.serialize(),
+
+            success: function(data, status) {
+                $("#doSubmitConfirm").addClass( "hidden" );
+                $($.parseHTML(data)).appendTo("#body");
+            },
+
+            complete: function() {
+            $(this).data('requestRunning', false);
+        }
+        });
+
+        event.preventDefault();
+    });
+});
+});
+</script>

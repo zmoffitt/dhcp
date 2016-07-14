@@ -1,10 +1,58 @@
-<?
-	include "includes/authenticate.inc.php";
-	include "includes/config.inc.php";
+<?php
+
+/**
+ * Main IP Management page for DHCP Management Console
+ * JS requested but not required - using it for form validation
+ *
+ * PHP version 5
+ *
+ * @category  PHP
+ * @package   PSI
+ * @author    Zachary Moffitt <zac@gsb.columbia.edu>
+ * @copyright 2016 Columbia Business School
+ */
+
+/*
+ * Configure information about the page
+ */
+
+	$pageTitle = "$subnet Subnet Overview";
+
+
+/*
+ * initialize the includes for functions and generate the header
+ * use this in all front-end pages to ensure uniformity
+ */
+        require "includes/authenticate.inc.php";
+        require "includes/config.inc.php";
+	require "includes/header.inc.php";
+
+/*
+ * Do the login operation via include 'authenticate' function
+ * Token is returned and compared to the database to verify
+ */
+	$_GET['username'] = $username;
 	$access_level = access_level($username);
         $management_of = "ip";
 ?>
-<?php include "includes/header.inc.php"; ?>
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#subnetList').DataTable({
+	"order": [],
+        "language": {
+            "lengthMenu": "Show _MENU_ IPs per page",
+            "zeroRecords": "Nothing IPs were returned",
+            "info": "Showing page _PAGE_ of _PAGES_",
+            "infoEmpty": "No IP records available",
+            "infoFiltered": "(filtered from _MAX_ total IPs)"
+        },
+	"lengthMenu": [[254, 508, 1016, -1], 
+		     [254, 508, 1016, "All"]], 
+	"columnDefs": [{ "orderable": true, }]}	
+);
+} );
+</script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$(".various").fancybox({
@@ -38,7 +86,7 @@ $(document).ready(function() {
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
-      <h2 class="text-center">DHCP Manager (Uris)</h2>
+      <h3 class="text-center">DHCP Manager (Uris)<br /><small class="text-muted">IP Management: <strong>Subnet <? echo $subnet ?></strong></small></h3>
     </div>
   </div>
   <hr>
@@ -52,7 +100,7 @@ if (! $subnet){
 	$subnet = $default_subnet;
 }
 
- if($subnet == "192.168.190") {
+ if ($subnet == "192.168.190" || $subnet == "10.252.0" || $subnet == "172.18.8" || $subnet == "172.18.0" || $subnet == "10.223.32" || $subnet == "172.18.4" || $subnet == "10.30.30" || $subnet == "192.168.13") {
 	$pattern = "$subnet";
  }
 
@@ -80,37 +128,75 @@ $total_excluded++;
 }
 
 // get the total # of dynamic IPs available
-$str_sql = "SELECT * FROM $db_tablename_ip where ip like '$pattern.%' and ip_type = 'dynamic'";
-$result = mysql_db_query($db_name, $str_sql, $id_link);
-$total_dynamic = mysql_num_rows($result);
+        if ($pattern == "172.18.8" || $pattern == "172.18.4") {
+                $str_sql = "SELECT * FROM $db_tablename_ip WHERE subnet LIKE '$pattern%' and ip_type='dynamic'";
+        } elseif ($pattern == "10.223.32") {
+		$str_sql = "SELECT * FROM $db_tablename_ip WHERE ip LIKE '10.223.%' and ip_type='dynamic'";
+	}  else {
+		$str_sql = "SELECT * FROM $db_tablename_ip where ip like '$pattern.%' and ip_type = 'dynamic'";
+	};
+	
+	$result = mysql_db_query($db_name, $str_sql, $id_link);
+	$total_dynamic = mysql_num_rows($result);
 
-// get the total # of dynamic IPs in use
-$str_sql = "SELECT * FROM $db_tablename_dynamic where ip like '$pattern.%' GROUP BY ip";
+	// get the total # of dynamic IPs in use
+        if ($pattern == "172.18.8" || $pattern == "172.18.4") {
+                $str_sql = "SELECT * FROM $db_tablename_dynamic WHERE subnet LIKE '$pattern%' GROUP BY ip";
+        } elseif ($pattern == "10.223.32") {
+                $str_sql = "SELECT * FROM $db_tablename_dynamic WHERE ip LIKE '10.223.%' GROUP BY ip";
+        } else {
+		$str_sql = "SELECT * FROM $db_tablename_dynamic where ip like '$pattern.%' GROUP BY ip";
+	}
 
-// print "Query: *$str_sql*<br>\n";
+	$result = mysql_db_query($db_name, $str_sql, $id_link);
+	$total_dynamic_active = mysql_num_rows($result);
 
-$result = mysql_db_query($db_name, $str_sql, $id_link);
-$total_dynamic_active = mysql_num_rows($result);
+	// get the total # of free IPs
+        if ($pattern == "172.18.8" || $pattern == "172.18.4") {
+                $str_sql = "SELECT * FROM $db_tablename_ip WHERE subnet LIKE '$pattern%' and ip_type='free'";
+        } elseif ($pattern == "10.223.32") {
+		$str_sql = "SELECT * FROM $db_tablename_ip WHERE ip LIKE '10.223.%' and ip_type='free'";
+	} else {
+		$str_sql = "SELECT * FROM $db_tablename_ip where ip like '$pattern.%' and ip_type = 'free'";
+	}
 
-// get the total # of free IPs
-$str_sql = "SELECT * FROM $db_tablename_ip where ip like '$pattern.%' and ip_type = 'free'";
-$result = mysql_db_query($db_name, $str_sql, $id_link);
-$total_free = mysql_num_rows($result);
+	$result = mysql_db_query($db_name, $str_sql, $id_link);
+	$total_free = mysql_num_rows($result);
 
-// get the total # of reserved IPs
-$str_sql = "SELECT * FROM $db_tablename_ip where ip like '$pattern.%' and ip_type = 'reserved'";
-$result = mysql_db_query($db_name, $str_sql, $id_link);
-$total_reserved = mysql_num_rows($result);
+	// get the total # of reserved IPs
+        if ($pattern == "172.18.8" || $pattern == "172.18.4") {
+                $str_sql = "SELECT * FROM $db_tablename_ip WHERE subnet LIKE '$pattern%' and ip_type='reserved'";
+        } elseif ($pattern == "10.223.32") {
+                $str_sql = "SELECT * FROM $db_tablename_ip WHERE ip LIKE '10.223.%' and ip_type='reserved'";
+        } else {
+		$str_sql = "SELECT * FROM $db_tablename_ip where ip like '$pattern.%' and ip_type = 'reserved'";
+	}
+	$result = mysql_db_query($db_name, $str_sql, $id_link);
+	$total_reserved = mysql_num_rows($result);
 
-// get the total # of static IPs
-$str_sql = "SELECT * FROM $db_tablename_ip where ip like '$pattern.%' and ip_type = 'static'";
-$result = mysql_db_query($db_name, $str_sql, $id_link);
-$total_static = mysql_num_rows($result);
+	// get the total # of static IPs
+        if ($pattern == "172.18.8" || $pattern == "172.18.4") {
+                $str_sql = "SELECT * FROM $db_tablename_ip WHERE subnet LIKE '$pattern%' and ip_type='static'";
+        } elseif ($pattern == "10.223.32") {
+                $str_sql = "SELECT * FROM $db_tablename_ip WHERE ip LIKE '10.223.%' and ip_type='static'";
+        } else {
+		$str_sql = "SELECT * FROM $db_tablename_ip where ip like '$pattern.%' and ip_type = 'static'";
+	}
 
-// get the total # of unknown IPs
-$str_sql = "SELECT * FROM $db_tablename_ip where ip like '$pattern.%' and ip_type = 'unknown'";
-$result = mysql_db_query($db_name, $str_sql, $id_link);
-$total_unknown = mysql_num_rows($result);
+	$result = mysql_db_query($db_name, $str_sql, $id_link);
+	$total_static = mysql_num_rows($result);
+
+	// get the total # of unknown IPs
+        if ($pattern == "172.18.8" || $pattern == "172.18.4") {
+                $str_sql = "SELECT * FROM $db_tablename_ip WHERE subnet LIKE '$pattern%' and ip_type='unknown'";
+        } elseif ($pattern == "10.223.32") {
+                $str_sql = "SELECT * FROM $db_tablename_ip WHERE ip LIKE '10.223.%' and ip_type='unknown'";
+        } else {
+		$str_sql = "SELECT * FROM $db_tablename_ip where ip like '$pattern.%' and ip_type = 'unknown'";
+	}
+	
+	$result = mysql_db_query($db_name, $str_sql, $id_link);
+	$total_unknown = mysql_num_rows($result);
 
 print "<hr /><div id=\"row\"><div class=\"col-md-4 col-md-offset-4\">\n";
 print "<table class=\"table table-striped table-hover table-bordered table-condensed\">\n";
@@ -141,7 +227,13 @@ if (! $result){
 	$subnet_notes = $row->notes;
 
 	// retrieve the IPs of the subnet requested
-       	$str_sql = "SELECT * FROM $db_tablename_ip WHERE ip LIKE '%$pattern%' ORDER BY id";
+	if ($pattern == "172.18.8" || $pattern == "172.18.4") {
+	       	$str_sql = "SELECT * FROM $db_tablename_ip WHERE subnet like '$pattern%' ORDER BY id";
+	} elseif ($pattern == "10.223.32") {
+		$str_sql = "SELECT * FROM $db_tablename_ip WHERE ip LIKE '10.223.%' ORDER BY id";
+	} else {
+		$str_sql = "SELECT * FROM $db_tablename_ip WHERE ip LIKE '%$pattern%' ORDER BY id";
+	}
 
 	if ($display_dynamic == 1){
 
@@ -221,19 +313,25 @@ if (! $result){
                	exit;
         }
 
-
-print "</div></div><div id=\"row\"><div class=\"col-md-12 col-md-offset-0\">\n";
-print "<div class=\"panel panel-default\"><div class=\"panel-heading text-center\"><h4>Subnet $subnet <small class=\"text-muted\">[VLAN: $vlan]</small></h4><h6 class=\"text-muted\">$subnet_notes</h6></div>\n";
+?>
+<!-- Preloader -->
+<div id="preloader"><div id="status"><div class="alert alert-info" role="alert"><h3 class="text-center"><i class='fa fa-circle-o-notch fa-spin'></i> Loading results...</h3></div></div></div>
+<!-- Content -->
+<?
+print "</div></div>\n";
+print "<div id=\"ipTable\" class=\"hidden\"><div class=\"col-md-12 col-md-offset-0\">\n";
+print "<div class=\"panel panel-default\"><div class=\"panel-heading text-center\"><h4>Subnet $subnet <small class=\"text-muted\"><samp>[VLAN: $vlan]</samp></small></h4><h5 class=\"text-muted\">$subnet_notes</h5></div>\n";
 print "<div class=\"panel-body\">\n";
-print "<table class=\"table table-striped table-hover table-bordered table-condensed\" id=\"subnetList\">\n";
-print "<tr><th><b>IP Address</b></th>\n";
+print "<table class=\"table table-striped table-hover table-bordered table-condensed\" cellspacing=\"0\" width=\"100%\" id=\"subnetList\">\n";
+print "<thead><tr>\n";
+print "<th><b>IP Address</b></th>\n";
 if ($access_level == $ADMIN){ print "<th class=\"text-center\"><b>Netdisco</b></th>\n"; };
 print "<th><b>Type</b></th>\n";
 print "<th><b>Computer Name</b></th>\n";
 print "<th><b>Client Name</b></th>\n";
 print "<th><b>MAC</b></th>\n";
 print "<th><b>Updated By</b></th>\n";
-print "<th><b>Lease</b></td><th><b>Notes</b></th></tr>\n";
+print "<th><b>Lease</b></td></th><th><b>Notes</b></th></tr></thead>\n";
 print "<tbody>\n";
 
 	$total_non_registered = 0;
@@ -394,15 +492,19 @@ print "<tbody>\n";
 		print "</tr>\n";
 	}
 	
-	print "</table></div>\n";
-
-	if ($mac_check == 1){
-		print "<br>\n";
-		print "<b><u><font color=ff0000>Total Non-Registered MACs: $total_non_registered</font></u></b><br>\n";
-	}
-
-	$t = date("Y-m-d h:i:sa",time());	
-	print "</div>\n";
+	print "</tbody></table>\n";
+?>
+<script type="text/javascript">
+    //<![CDATA[
+        $(window).load(function() { // makes sure the whole site is loaded
+            $('#status').fadeOut(); // will first fade out the loading animation
+            $('#preloader').delay(50).fadeOut('fast'); // will fade out the white DIV that covers the website.
+            $('#ipTable').removeClass('hidden');
+        })
+    //]]>
+</script>
+<?
+	print "</div><hr />\n";
 
 	include "$footer";
 

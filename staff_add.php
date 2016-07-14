@@ -1,21 +1,29 @@
-<?
+<?php
+
+/**
+ * User add function for DHCP Management Console
+ * JS requested but not required - using it for form validation
+ *
+ * PHP version 5
+ *
+ * @category  PHP
+ * @package   PSI
+ * @author    Zachary Moffitt <zac@gsb.columbia.edu>
+ * @copyright 2016 Columbia Business School
+ */
+
+/*
+ * initialize the includes for functions and generate the header
+ * use this in all front-end pages to ensure uniformity
+ */
+
 	include "includes/authenticate.inc.php";
 	include "includes/config.inc.php";
 	$access_level = access_level($username);
 	$who = $username;
 ?>
-	
-<title>DHCP Manager</title>
-<body onload="changeScreenSize(<? echo $popup_height; ?>,<? echo $popup_width; ?>)">
-<center>
-<font color=0000ff>
-<h1>DHCP Manager - Staff Management</h1>
-</font>
 
-<br>
-
-<? 
-	if (strcmp($action, "add") == 0){
+<?php if (strcmp($action, "add") == 0):
 		
 		if (! $staff || ! $grp){
 			print "<center><font color=ff0000>\n";
@@ -74,13 +82,14 @@
 
                 // reset variables
                 $staff = "";
-		$grp = "";
-
-	}		
+		$grp = "";		
 
 ?>
 
+<? elseif (strcmp($action, "add") != 0): ?>
 <center>
+
+<h1>Showing legacy form:</h1>
 <table border=2 cellspacing=2 cellpadding=2 width=50%>
 
 <form METHOD=POST action=staff_add.php>
@@ -145,10 +154,5 @@
 </tr>
 </table>
 </center>
-<br>
-
-<?
-	include "$footer";
-?>
-
+<? endif; ?>
 </body>
