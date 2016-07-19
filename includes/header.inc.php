@@ -19,9 +19,9 @@
 
         include_once "config.inc.php";
         $auth_string = auth_string($username);
-	$activePage = basename($_SERVER['PHP_SELF'], ".php");
-	$mini = $_GET['q'];
-	$authURL = "username=$username&token=$token&refresh_rate=$default_refresh_rate";
+	    $activePage = basename($_SERVER['PHP_SELF'], ".php");
+    	$mini = $_GET['q'];
+    	$authURL = "username=$username&token=$token&refresh_rate=$default_refresh_rate";
 
 ?>
 <? if ($mini == 'xmini'): ?>
@@ -36,7 +36,6 @@
 <link rel="stylesheet" href="/dhcp/css/bootstrap.css">
 <link rel="stylesheet" href="/dhcp/css/fa/css/font-awesome.min.css">
 <link rel="stylesheet" href="/dhcp/css/formValidation.min.css">
-<link rel="stylesheet" href="/dhcp/assets/fancybox/source/jquery.fancybox.css">
 <link rel="stylesheet" href="/dhcp/css/dataTables.bootstrap4.min.css" type="text/css">
 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -50,7 +49,6 @@
 <script type="text/javascript" src="/dhcp/js/bootstrap.js"></script>
 <script type="text/javascript" src="/dhcp/js/formValidation.min.js"></script>
 <script type="text/javascript" src="/dhcp/js/bootstrapFramework.min.js"></script>
-<script type="text/javascript" src="/dhcp/assets/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 <script type="text/javascript" src="/dhcp/js/bootbox.min.js"></script>
 <script type="text/javascript" src="/dhcp/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/dhcp/js/dataTables.bootstrap4.min.js"></script>
@@ -127,7 +125,7 @@ td{
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <?php
-
+/*
 $daemon = `ps auxw | grep -i dhcpd | grep -iv grep`;
 $fields = split("[ ]+", $daemon);
 
@@ -145,6 +143,7 @@ else{
 }
 
 print "$string\n";
+*/
 ?>
         <li><a href="/dhcp/index.php?q=logout">Sign Out</a></li>
       </ul>

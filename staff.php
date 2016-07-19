@@ -22,95 +22,72 @@
  * use this in all front-end pages to ensure uniformity
  */
 
-	include "includes/authenticate.inc.php";
+    include "includes/authenticate.inc.php";
 	include "includes/config.inc.php";
 	$access_level = access_level($username);
 	include "includes/header.inc.php";
 	$who = $username;
 
-if (strcmp($action, "add") == 0){
+    /* Use the body include to centralize formatting */
+    include "includes/body.inc.php"; 
+        
+    /* init a db connection for upcoming operations */
+    $connection = db_connect($db_hostname,$db_username,$db_password,$db_name); 
+        
 
-                // make sure it's an administrator
-                include "admin_check.inc.php";
+    if (strcmp($action, "add") == 0)
+    {
 
-                // make sure staff name is in right format
-                check_staff_format($staff);
+        // make sure it's an administrator
+        include "admin_check.inc.php";
 
-                // make sure staff does not already exist in the database
-                // go through all the replication partners
-                for (reset($dhcp_partners); $key = key($dhcp_partners); next($dhcp_partners)){
-                        $tmp = "\$partner_$key";
-                        eval("if ($tmp == 1){\$to_replicate = 1;}else{\$to_replicate = 0;}");
-                        if ($to_replicate == 1){
-                                staff_exist($dhcp_partners[$key], $key, $staff);
-                        }
+        // make sure staff name is in right format
+        check_staff_format($staff);
 
+        // make sure staff does not already exist in the database
+            for (reset($dhcp_partners); $key = key($dhcp_partners); next($dhcp_partners))
+            {
+                $tmp = "\$partner_$key";
+                eval("if ($tmp == 1){\$to_replicate = 1;}else{\$to_replicate = 0;}");
+                    if ($to_replicate == 1){
+                         staff_exist($dhcp_partners[$key], $key, $staff);
+                    }
+             }
+
+
+        // User doesn't exist in database; let complete the transaction
+        $ip_from = $REMOTE_ADDR;
+
+        // go through all the replication partners
+        for (reset($dhcp_partners); $key = key($dhcp_partners); next($dhcp_partners)) 
+        {
+            $tmp = "\$partner_$key";
+            eval("if ($tmp == 1){\$to_replicate = 1;}else{\$to_replicate = 0;}");
+            // print "$tmp = $to_replicate<br>\n";
+                if ($to_replicate == 1)
+                {
+                    staff_add($who, $ip_from, $dhcp_partners[$key], $staff, $grp);
+                        if (! $server_list) { $server_list = "$key"; }
+                        else { $server_list .= ", $key"; }
                 }
-
-
-		// User doesn't exist in database; let complete the transaction
-                $ip_from = $REMOTE_ADDR;
-
-                // go through all the replication partners
-                for (reset($dhcp_partners); $key = key($dhcp_partners); next($dhcp_partners)){
-                        $tmp = "\$partner_$key";
-                        eval("if ($tmp == 1){\$to_replicate = 1;}else{\$to_replicate = 0;}");
-                        // print "$tmp = $to_replicate<br>\n";
-                        if ($to_replicate == 1){
-
-                                staff_add($who, $ip_from, $dhcp_partners[$key], $staff, $grp);
-
-                                if (! $server_list){
-                                        $server_list = "$key";
-                                }
-
-                                else{
-                                        $server_list .= ", $key";
-                                }
-
-                        }
 		}
 		echo "ok"; // return ok, we're done
 	
-                // reset variables
+        // reset variables
 		$staffAdded = $staff;
-                $staff = "";
-                $grp = "";
+        $staff = "";
+        $grp = "";
 		exit;
-}
+    }
 
-?>
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-      <h3 class="text-center">DHCP Manager (Uris)<br /><small class="text-muted"><? echo $pageTitle ?></small></h3>
-    </div>
-  </div>
-  <hr>
-
-<?
-        $id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
-
-	$str_sql = "SELECT * FROM $db_tablename_staff";
-
-        if ($orderby){
-                $str_sql .= " ORDER BY $orderby";
-        }
-
-	else{
-                $str_sql .= " ORDER BY username";
-        }
+    $id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
+	$str_sql = "SELECT * FROM $db_tablename_staff ORDER BY username";
 
         $result = mysql_db_query($db_name, $str_sql, $id_link);
 
-       	if (! $result){
-		print $top;
-                print "Failed to submit to database";
-		print $bottom;
-               	exit;
-        }
+       	if (!$result) { print $top . "Failed to submit to database"; exit; }
 
-	$total_rows = mysql_num_rows($result);
+    	$total_rows = mysql_num_rows($result);
 
        	if ($total_rows == 0){
 		print "<center>\n";
@@ -121,61 +98,78 @@ if (strcmp($action, "add") == 0){
        	        include "$footer";
                	exit;
         }
+
+
+/*
+ * ===========================================================================
+ *
+ *   Switching to PHP Alteranative Syntax to allow easy formatting of HTML 
+ *   objects (it'll help us not worry about sloppy prints or echos in PHP).
+ * 
+ * ===========================================================================
+ */
+
 ?>
-        <div class="container-fluid">
-        <div id="row"><div class="col-md-4 col-md-offset-4">
+
+    <div class="container-fluid">
+    <div id="row"><div class="col-xs-6 col-xs-offset-3">
 	<table class="table table-striped table-hover table-bordered table-condensed">
-	<thead>
         <? if ($access_level == $ADMIN): ?>
+        <thead>
 		<tr><th class="text-right" colspan="4"> <a data-toggle="modal" class="btn btn-default" data-toggle="modal" data-target="#myModal" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Loading...">Add New User</a></th></tr>
+        </thead>
         <? endif; ?><div class="row">
+    <tr><thead>
 	<th>Staff Name</th>
 	<th>Group</th>
 
-<? if ($access_level == $ADMIN): ?>
-	 <th>Delete</th>
-     	 <th>Modify</th>
-<? endif; ?>
+    <? if ($access_level == $ADMIN): ?>
+	<th>Delete</th>
+    <th>Modify</th>
+    <? endif; ?>
 
-	</tr></thead>
+	</thead></tr>
 
-<?	while ($row = mysql_fetch_object($result)){
+<?	while ($row = mysql_fetch_object($result))
+    {
 
 		$username_db = $row->username;
 		$grp = $row->grp;
 
 		print "<tr>\n";
 
-		print "<td nowrap>$username_db&nbsp;</td>\n";
-		print "<td nowrap>" . ucfirst($grp) . "&nbsp;</td>\n";
+		print "<td nowrap>$username_db</td>\n";
+		print "<td nowrap>" . ucfirst($grp) . "</td>\n";
 
-		if ($access_level == $ADMIN){	
+		if ($access_level == $ADMIN)
+        {	
+            print "<td class=\"text-center\">\n";
+    		print "<form action=\"staff_delete.php\" method=\"post\" class=\"form-inline modify\" role=\"form\" id=\"modify\">\n";
+    		print "<input type=hidden name=username value=$username>\n";
+    		print "<input type=hidden name=token value=$token>\n";
+    		print "<input type=hidden name=staff value=$username_db>\n";
+    		print "<input type=hidden name=grp value=$grp>\n";
+    		print "<button data-op=\"delete\" data-id=\"$username_db\" data-username=\"$username\" data-token=\"$token\" data-grp=\"$grp\" data-title=\"Delete user $username_db?\" `
+                    class=\"btn btn-danger editButton\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i>\" type=\"button\">Delete</button>\n";
+    		print "</form>\n";
+    		print "</td>\n";
 
-		print "<td class=\"text-center\">\n";
-		print "<form action=\"staff_delete.php\" method=\"post\" class=\"form-inline modify\" role=\"form\" id=\"modify\">\n";
-		print "<input type=hidden name=username value=$username>\n";
-		print "<input type=hidden name=token value=$token>\n";
-		print "<input type=hidden name=staff value=$username_db>\n";
-		print "<input type=hidden name=grp value=$grp>\n";
-		print "<button data-op=\"delete\" data-id=\"$username_db\" data-username=\"$username\" data-token=\"$token\" data-grp=\"$grp\" data-title=\"Delete user $username_db?\"  class=\"btn btn-danger editButton\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i>\" type=\"button\">Delete</button>\n";
-		print "</form>\n";
-		print "</td>\n";
-
-		print "<td align=center nowrap>\n";
-                print "<form action=\"staff_modify.php\" method=\"post\" class=\"form-inline modify\" role=\"form\" id=\"modify\">\n";
-		print "<input type=hidden name=username value=$username>\n";
-		print "<input type=hidden name=token value=$token>\n";
-		print "<input type=hidden name=staff value=$username_db>\n";
-		print "<input type=hidden name=grp value=$grp>\n";
-                print "<button data-op=\"modify\" data-id=\"$username_db\" data-username=\"$username\" data-token=\"$token\" data-grp=\"$grp\" data-title=\"Editing user $username_db\" class=\"btn btn-warning editButton\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i>\" type=\"button\">Modify</button>\n";
-		print "</form>\n";
-		print "</td>\n";
+    		print "<td align=center nowrap>\n";
+            print "<form action=\"staff_modify.php\" method=\"post\" class=\"form-inline modify\" role=\"form\" id=\"modify\">\n";
+    		print "<input type=hidden name=username value=$username>\n";
+    		print "<input type=hidden name=token value=$token>\n";
+    		print "<input type=hidden name=staff value=$username_db>\n";
+    		print "<input type=hidden name=grp value=$grp>\n";
+            print "<button data-op=\"modify\" data-id=\"$username_db\" data-username=\"$username\" data-token=\"$token\" data-grp=\"$grp\" data-title=\"Editing user $username_db\" `
+                    class=\"btn btn-warning editButton\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i>\" type=\"button\">Modify</button>\n";
+    		print "</form>\n";
+    		print "</td>\n";
 
 		}
 
 		print "</tr>\n";
 
-	}
+    }
 	
 	print "</table>\n";
 	print "<br><br><hr></div></div></div>\n";

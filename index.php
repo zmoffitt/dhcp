@@ -16,44 +16,45 @@
  * initialize the includes for functions and generate the header
  * use this in all front-end pages to ensure uniformity
  */
-	require "includes/functions.inc.php";
-        require "includes/config.inc.php";
-	require "includes/header.inc.php";
+    require "includes/functions.inc.php";
+    require "includes/config.inc.php";
+    require "includes/header.inc.php";
+    $q = $_GET['q'];
 
 /*
  * Do the login operation via include 'authenticate' function
  * Token is returned and compared to the database to verify
  */ 
-        if (strcmp($operation, "login") == 0){
-                $ip_from = $REMOTE_ADDR;
-                $token = authenticate($username, $password, $ip_from);
-                $datetime = date("Y-m-d H:i:s");
-                // update the "login" table to record login success/failure
-                $id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
-                $str_sql = "INSERT INTO $db_tablename_login (who, ip, datetime, success) VALUES ('$username', '$ip_from', '$datetime', '$success')";
-                $result = mysql_db_query($db_name, $str_sql, $id_link);
-                if (! $result){
-			die ("Error occurred during submission to DB!");
+    if (strcmp($operation, "login") == 0) {
+        $ip_from = $REMOTE_ADDR;
+        $token = authenticate($username, $password, $ip_from);
+        $datetime = date("Y-m-d H:i:s");
+
+        // update the "login" table to record login success/failure
+        $id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
+        $str_sql = "INSERT INTO $db_tablename_login (who, ip, datetime, success) VALUES ('$username', '$ip_from', '$datetime', '$success')";
+        $result = mysql_db_query($db_name, $str_sql, $id_link);
+            if (! $result) {
+	        die ("Error occurred during submission to DB!");
+            }
+     
+            // check for a valid token and send them to the right place or give them a valid warning           
+            if ($token) {
+                $access_level = access_level($username);
+                if ($access_level == $ADMIN || $access_level == $READ) {
+                    header("Location: main.php?subnet=172&username=$username&token=$token&refresh_rate=$default_refresh_rate");
+                } else {
+                    exit(header("Location: index.php?q=notAuthorized"));
                 }
-                if ($token){
-                        $access_level = access_level($username);
-                        if ( ($access_level == $ADMIN) || ($access_level == $READ) ){
-                                header("Location: main.php?subnet=172&username=$username&token=$token&refresh_rate=$default_refresh_rate");
-                        }
-                        else{
-                                exit(header("Location: index.php?q=notAuthorized"));
-                        }
-                }
-                // Unable to authenticate or credential validation failure
-                else {
-                        exit(header("Location: index.php?q=authFail"));
-                }
-        }
+            } else { // Unable to authenexit(header("Location: index.php?q=authFail"));
+                    exit(header("Location: index.php?q=authFail"));
+            }
+    }
 	
-	if ($q == 'logout') {
-		logout($username, $token, $ip_from);
-		HEADER("Location: index.php?q=logoutSuccess");
-	}
+    if ($q == 'logout') {
+        logout($username, $token, $ip_from);
+	HEADER("Location: index.php?q=logoutSuccess");
+    }
 
 /*
  * Switch to Alternative Syntax to allow HTML definitions based on error codes
@@ -63,8 +64,8 @@
 ?>
 <!-- Start Body -->
 <div class="container">
-  <div class="row text-center">
-   <br /><br />
+    <div class="row text-center">
+         <br /><br />
 
       <? if ($q == 'authFail'): ?>
       <!-- AuthFailure Block -->
