@@ -48,6 +48,7 @@ function db_connect($db_hostname,$db_username,$db_password,$db_name) {
 
 /* mark_update function() */
 function mark_update($host) {
+    require "config.inc.php";
     $id_link = mysql_pconnect($host, $db_username, $db_password);
     $str_sql = "UPDATE $db_tablename_state SET need_update = 1 WHERE id = 1";
     $result = mysql_db_query($db_name, $str_sql, $id_link);

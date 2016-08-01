@@ -40,8 +40,8 @@ if ($total >= 1){
 
 else{
 
-//  HEADER("Location: /dhcp/index.php?q=sessionTimeout");
-//  exit;
+  HEADER("Location: /dhcp/index.php?q=sessionTimeout");
+  exit;
 
 }
 

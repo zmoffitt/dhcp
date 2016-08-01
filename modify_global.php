@@ -13,6 +13,13 @@
  */
 
 /*
+ * Configure information about the page
+ */
+
+        $pageTitle = "Global Configuration";
+
+
+/*
  * initialize the includes for functions and generate the header
  * use this in all front-end pages to ensure uniformity
  */
@@ -128,6 +135,7 @@
 
 	$row = mysql_fetch_object($result);
 	$domain = $row->domain;
+	$ntp_server = $row->ntp_server;
 	$dns_1 = $row->dns_1;
 	$dns_2 = $row->dns_2;
 	$dns_3 = $row->dns_3;
@@ -147,13 +155,22 @@
 	print "<input type=hidden name=old_wins_2 value=\"$wins_2\">\n";
         print "<input type=hidden name=username value='$username'>\n";
         print "<input type=hidden name=token value='$token'>\n";
-
-	print "<center>\n";
-	print "<table border=4 cellpadding=4 cellspacing=4 width=50%>\n";
-	print "<tr><td><b>Domain Name:</b></td>\n";
+?>
+    <div class="container-fluid">
+    <div id="row"><div class="col-xs-6 col-xs-offset-3">
+        <table class="table table-striped table-hover table-bordered table-condensed">
+	<thead>
+	<tr><td>Option</td>
+	<td>Value</td></td>
+	</thead>
+<?
+	print "<tr><td>Domain Name:</td>\n";
 	print "<td>$domain</td></tr>\n";
+
+	print "<tr><td>Time/NTP Server:</td>\n";
+	print "<td>$ntp_server</td></tr>\n";
 	
-	print "<tr><td><b>DNS Server 1:</b></td>\n";
+	print "<tr><td>DNS Server 1:</td>\n";
 
 	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
 		print "<td><input type=text name=dns_1 value=\"$dns_1\"></td></tr>\n";
@@ -163,7 +180,7 @@
 		print "<td>$dns_1</td></tr>\n";
 	}
 
-	print "<tr><td><b>DNS Server 2:</b></td>\n";
+	print "<tr><td>DNS Server 2:</td>\n";
 
 	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
 		print "<td><input type=text name=dns_2 value=\"$dns_2\"></td></tr>\n";
@@ -173,7 +190,7 @@
 		print "<td>$dns_2</td></tr>\n";
 	}
 
-	print "<tr><td><b>DNS Server 3:</b></td>\n";
+	print "<tr><td>DNS Server 3:</td>\n";
 
 	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
 		print "<td><input type=text name=dns_3 value=\"$dns_3\"></td></tr>\n";
@@ -183,7 +200,7 @@
 		print "<td>$dns_3</td></tr>\n";
 	}
 
-	print "<tr><td><b>DNS Server 4:</b></td>\n";
+	print "<tr><td>DNS Server 4:</td>\n";
 
 	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
 		print "<td><input type=text name=dns_4 value=\"$dns_4\"></td></tr>\n";
@@ -193,7 +210,7 @@
 		print "<td>$dns_4</td></tr>\n";
 	}
 
-	print "<tr><td><b>DNS Server 5:</b></td>\n";
+	print "<tr><td>DNS Server 5:</td>\n";
 
 	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
 		print "<td><input type=text name=dns_5 value=\"$dns_5\"></td></tr>\n";
@@ -203,7 +220,7 @@
 		print "<td>$dns_5</td></tr>\n";
 	}
 
-	print "<tr><td><b>WINS Server 1:</b></td>\n";
+	print "<tr><td>WINS Server 1:</td>\n";
 
 	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
 		print "<td><input type=text name=wins_1 value=\"$wins_1\"></td></tr>\n";
@@ -213,7 +230,7 @@
 		print "<td>$wins_1&nbsp;</td></tr>\n";
 	}
 
-	print "<tr><td><b>WINS Server 2:</b></td>\n";
+	print "<tr><td>WINS Server 2:</td>\n";
 
 	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
 		print "<td><input type=text name=wins_2 value=\"$wins_2\"></td></tr>\n";
@@ -228,8 +245,8 @@
 	}
 
 	print "</table>\n";
-	print "</center>\n";
 	print "</form>\n";
+	print "</div></div></div>\n";
 	include "$footer";
 
 ?>

@@ -82,7 +82,7 @@
 			$subnet = $default_subnet;
 		}
 
-		else if ($subnet == "192.168.190" || $subnet == "10.252.0" || $subnet == "172.18.8" || $subnet == "172.18.0" || $subnet == "10.223.32" || $subnet == "172.18.4" || $subnet == "192.168.13") {
+		else if ($subnet == "192.168.190" || $subnet == "10.252.0" || $subnet == "172.18.8" || $subnet == "172.18.0" || $subnet == "10.223.32" || $subnet == "172.18.4" || $subnet == "192.168.13" || $subnet == "10.30.30") {
 			$subnet_full = $subnet . ".0";
 		}
 		else {
@@ -161,7 +161,7 @@
 	}
 
 	else{
-                 if ($subnet == "192.168.190" || $subnet == "10.252.0" || $subnet == "172.18.8" || $subnet == "172.18.0" || $subnet == "10.223.32" || $subnet =="172.18.4" || $subnet == "192.168.13") {
+                 if ($subnet == "192.168.190" || $subnet == "10.252.0" || $subnet == "172.18.8" || $subnet == "172.18.0" || $subnet == "10.223.32" || $subnet =="172.18.4" || $subnet == "192.168.13" || $subnet == "10.30.30") {
 			$subnet_full = $subnet . ".0";
 		} else {
 			$subnet_full = $prefix . "." . $subnet . ".0";
@@ -188,8 +188,18 @@
 	$broadcast = $row->broadcast;
 	$lease = $row->lease;
 	$vlan = $row->vlan;
+	$pxe = $row->pxe;
+	$boot_ip = $row->boot_ip;
+	$enabled = $row->enabled;
 	$notes = $row->notes;
 	$notes = trim($notes);
+
+    /* Calculate the CIDR format of the netmask */
+        $bits = 0;
+        $netmask = explode(".", $mask);
+                foreach($netmask as $octect)
+                $bits += strlen(str_replace("0", "", decbin($octect)));
+        $cidr = $bits;
 
 	if (strcmp($action, "modify_subnet") != 0) {
 	print "<div class=\"col-xs-6\" style=\"float: none; margin: 0 auto;\">\n";
@@ -214,11 +224,7 @@
 	        print "<div class=\"panel-body\" style=\"margin: 20px;\">\n";
 	}
 	print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">Subnet </label>\n";
-        if ( (strcmp($action, "modify_subnet") != 0) && ($access_level == $ADMIN) ) {
-                print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" name=\"subnet\" value=\"$subnet_full\" disabled /></div></div></fieldset>\n";
-        } else {
-		print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" name=\"subnet\" value=\"$subnet_full\" disabled /></div></div></fieldset>\n";
-        }
+        print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" name=\"subnet\" value=\"$subnet_full/$cidr\" disabled /></div></div></fieldset>\n";
 
         print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">Notes</label>\n";
 
@@ -306,7 +312,7 @@
 	else{
 
 		if ($bootp == 1){
-                        print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"yes\" disabled /></div></div></fieldset>\n";
+                        print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"Yes\" disabled /></div></div></fieldset>\n";
                 }
 
                 else{
@@ -314,6 +320,23 @@
                 }
 	}
 
+        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">DHCP Enabled</label>\n";
+        print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"";
+
+        if ($enabled == 1) {print "Yes\n";} else {print "No";}
+        print "\" disabled></p></div></div></fieldset>\n";
+
+        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">PXE Boot Enabled</label>\n";
+        print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"";
+
+        if ($pxe == 1) {print "Yes\n";} else {print "No";}
+        print "\" disabled></p></div></div></fieldset>\n";
+
+        print "<fieldset class=\"form-group\"><div class=\"form-group row\"><label class=\"col-md-2 form-control-label\">PXE Boot IP</label>\n";
+        print "<div class=\"col-md-10\"><input type=\"text\" class=\"form-control\" value=\"";
+
+        if ($pxe != 0) {print "$boot_ip\n";} else {print "N/A";}
+        print "\" disabled></p></div></div></fieldset>\n";
 	if ( (strcmp($action, "modify_subnet") != 0) && ($access_level == $ADMIN) ){
                 print "</div><div class=\"panel-footer\"><div class=\"form-group text-center\">\n";
 	        print "<button name=\"modify\" id=\"load\" target=\"_parent\" type=\"submit\" class=\"btn btn-danger\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i> Saving...\">Modify Subnet Settings</button></div></div>\n";

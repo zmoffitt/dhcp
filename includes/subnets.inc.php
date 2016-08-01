@@ -14,6 +14,8 @@ if ($subnet == '83') {
 	$s190 = "class=\"active\"";
 } else if ($subnet == '84') {
         $s84 = "class=\"active\"";
+} else if ($subnet == '132') {
+	$s132 = "class=\"active\"";
 } else if ($subnet == '199') {
         $s199 = "class=\"active\"";
 } else if ($subnet == '205') {
@@ -46,7 +48,7 @@ if ($subnet == '83') {
 	} else {
         print "<div class=\"container\">\n";
         print "<div class=\"row text-center\">\n";
-	print "<div class=\"col-lg-8 col-lg-offset-2\">\n";
+	print "<div class=\"col-lg-12\">\n";
 	}
 
 	if (strcmp($management_of, "ip") == 0){
@@ -59,6 +61,7 @@ if ($subnet == '83') {
 	print "<ul class=\"nav nav-pills nav-justified\">\n";
 	print "<li $s83><a href=$script?subnet=83&username=$username&token=$token&refresh_rate=$refresh_rate>Subnet 83</a></li>\n";
         print "<li $s84><a href=$script?subnet=84&username=$username&token=$token&refresh_rate=$refresh_rate>Subnet 84</a></li>\n";
+	print "<li $s132><a href=$script?subnet=132&username=$username&token=$token&refresh_rate=$refresh_rate>Subnet 132</a></li>\n";
         print "<li $s172><a href=$script?subnet=172&username=$username&token=$token&refresh_rate=$refresh_rate>Subnet 172</a></li>\n";
         print "<li $s190><a href=$script?subnet=190&username=$username&token=$token&refresh_rate=$refresh_rate>Subnet 190</a></li>\n";
        	print "<li $s199><a href=$script?subnet=199&username=$username&token=$token&refresh_rate=$refresh_rate>Subnet 199</a></li>\n";
@@ -78,7 +81,7 @@ if ($subnet == '83') {
 	        print "<li $voip><a href=$script?subnet=10.223.32&username=$username&token=$token&refresh_rate=$refresh_rate>VoIP Subnet</a></li>\n";
 	        print "<li $mmg><a href=$script?subnet=172.18.4&username=$username&token=$token&refresh_rate=$refresh_rate>MMG Internal</a></li>\n";
 	        print "<li $pxe><a href=$script?subnet=172.18.0&username=$username&token=$token&refresh_rate=$refresh_rate>PXE Subnet</a></li>\n";
-		print "<li $mgmt><a href=$script?subnet=10.30.30&username=$username&token=$token&refresh_rate=$refresh_rate>Mgmt Subnet</a></li>\n";
+		print "<li $mgmt><a href=$script?subnet=10.30.30&username=$username&token=$token&refresh_rate=$refresh_rate>Management Subnet</a></li>\n";
 		print "<li $storage><a href=$script?subnet=192.168.13&username=$username&token=$token&refresh_rate=$refresh_rate>Storage Subnet</a></li>\n";
 	        print "<li $devstag><a href=$script?subnet=10.252.0&username=$username&token=$token&refresh_rate=$refresh_rate>Dev/Stag Subnet</a></li>\n";;
 	       	print "</ul></div></div></div>\n";

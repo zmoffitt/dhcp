@@ -81,8 +81,17 @@
     /* retrieve the data from before and print to the table */
     while ($row = mysqli_fetch_object($result)) {
         $vlan = $row->vlan;
+	$netmask = $row->mask;
         $subnet_notes = $row->notes;
     }
+
+    /* Calculate the CIDR format of the netmask */
+	$bits = 0;
+	$netmask = explode(".", $netmask);
+		foreach($netmask as $octect)
+		$bits += strlen(str_replace("0", "", decbin($octect)));
+	$mask = $bits;
+
 
     /* retrieve the IPs of the subnet requested */
     $query  = "SELECT * FROM $db_tablename_ip WHERE subnet like '$pattern%' ORDER BY id";
@@ -109,39 +118,52 @@
 
 <hr />
 <div id="row">
-    <div class="col-xs-6 col-xs-offset-3">
+    <div class="col-xs-4 col-xs-offset-4">
         <table class="table table-striped table-bordered">
             <tr>
-                <td class="table-active" colspan=2 align=center><b>Subnet <? echo $subnet ?> Statistics</b></td>
+                <td class="table-active" colspan=2 align=center><strong>Subnet <? echo $subnet ?> Statistics</strong></td>
             </tr>
             <tr>
                 <td>Total Dynamic IPs in the pool:</td>
-                <td><? echo $total_dynamic ?></td>
+                <td class="active text-center text-active strong"><strong><? echo $total_dynamic ?></strong></td>
             </tr>
             <tr>
                 <td>Total Dynamic IPs in use:</td>
-                <td><? echo $total_dynamic_active ?></td>
+                <td class="warning text-center text-warning strong"><strong><? echo $total_dynamic_active ?></strong></td>
             </tr>
             <tr>
                 <td>Total Dynamic IPs free:</td>
-                <td><? echo $total_dynamic-$total_dynamic_active ?></td>
+                <td class="success text-center text-success strong"><strong><? echo $total_dynamic-$total_dynamic_active ?></strong></td>
             </tr>
+
+
+<?
+ /*
             <tr>
                 <td>Total Unallocated IPs:</td>
                 <td><? echo $total_free ?></td>
             </tr>
+*/
+?>
+
+
             <tr>
                 <td>Total IP Reservations:</td>
-                <td><? echo $total_reserved ?></td>
+                <td class="text-center"><? echo $total_reserved ?></td>
             </tr>
             <tr>
                 <td>Total Static IPs:</td>
-                <td><? echo $total_static ?></td>
+                <td class="info text-center text-info"><strong><? echo $total_static ?></strong></td>
             </tr>
+<?
+/*
             <tr>
                 <td>Total Unknown IPs:</td>
                 <td><? echo $total_unknown ?></td>
             </tr>
+*/
+?>
+
         </table>
 
     <!-- Preloader -->
@@ -157,17 +179,17 @@
 <div id="ipTable" class="hidden"><div class="col-xs-12">
     <div class="panel panel-default">
         <div class="panel-heading text-center">
-            <h4>Subnet <? echo $subnet ?>
-            <small class="text-muted"><samp>[VLAN: <? echo $vlan ?>]</samp></small></h4>
+            <h4><samp><? echo $pattern ?>.0/<? echo $mask ?></samp></br>
+            <small class="text-muted"><samp>[VLAN: <? echo $vlan ?> | Total IPs: <? echo $ip_count ?>]</samp></small></h4>
             <h5 class="text-muted"><? echo $subnet_notes ?></h5>
         </div>
         <div class="panel-body">
-            <table class="table table-striped table-hover table-bordered table-condensed" width="100%" id="subnetList">
+            <table class="table table-hover table-condensed" width="100%" id="subnetList">
                 <thead>
                     <tr>
                         <th>IP Address</th>
                         <? if ($access_level == $ADMIN): ?>
-                        <th>Netdisco</th>
+                        <!--<th>Netdisco</th>-->
                         <? endif; ?>
                         <th>Type</th>
                         <th>Computer Name</th>
@@ -195,7 +217,7 @@ else {
         $ip = $row->ip;
     	$type = $row->ip_type;
         $color = null;
-    	$username_db = $row->username;
+    	$username_db = '<small>'.$row->username.'</small>';
     	$clientname = $row->clientname;
     	$mac = $row->mac;
     	$lease = $row->lease;
@@ -205,21 +227,24 @@ else {
         /* set the field to N/A if empty to keep it clean */
     	if (!$ip) $ip = "--N/A--";
     	if (!$type) $type = "--N/A--";
-    	if (!$username_db) $username_db = "--N/A--";
-    	if (!$clientname) $clientname = "--N/A--";
-    	if (!$mac) $mac = "--N/A--";
-    	if (!$notes) $notes = "--N/A--";
-    	if (!$lastUpdated) $lastUpdated = "--N/A--";
+    	if (!$username_db) $username_db = "-";
+    	if (!$clientname) $clientname = "-";
+    	if (!$mac) $mac = "-";
+    	if (!$notes) $notes = "";
+    	if (!$lastUpdated) $lastUpdated = "-";
 
         /* do the math to convert the lease from minutes to hours */
-    	if (!$lease) { $lease_str = "--Default--"; } else { $lease_str = (($lease / 60)/60). " hours"; }
+    	if (!$lease) { $lease_str = "<center>-</center>"; }
+	else if (($lease / 60) < 61) {  $lease_str = $lease_str=(($lease /60)) . ' Minutes';  }
+	else if ((($lease / 60)/60) < 25){ $lease_str = $lease_str=(($lease /60)/60) . ' Hours';  }
+	else if ((($lease / 60)/60) > 24){ $lease_str = $least_str=((($lease /60)/60)/24) . ' Days'; }
 
         /* Color the cell based on the IP type */
-        if (strcmp($type, "dynamic") == 0) { $bgcolor_type = $color_dynamic; }
-        if (strcmp($type, "free") == 0) { $bgcolor_type = $color_free; }
-        if (strcmp($type, "reserved") == 0) { $bgcolor_type = $color_reserved; }
-        if (strcmp($type, "static") == 0) { $bgcolor_type = $color_static; }
-        if (strcmp($type, "unknown") == 0) { $bgcolor_type = $color_unknown; }
+        if (strcmp($type, "dynamic") == 0) { $bgcolor_type = "active"; }
+        if (strcmp($type, "free") == 0) { $bgcolor_type = "success strong"; }
+        if (strcmp($type, "reserved") == 0) { $bgcolor_type = "warning strong"; }
+        if (strcmp($type, "static") == 0) { $bgcolor_type = "info strong"; }
+        if (strcmp($type, "unknown") == 0) { $bgcolor_type = "danger"; }
 
         /* Check to see if this is a dynamic IP and allow additional options */
         $query = "SELECT computername,mac FROM $db_tablename_dynamic WHERE ip = '$ip'";
@@ -229,9 +254,10 @@ else {
         /* Adjust the output if data was discovered from the dynamic table */
         if ($row_dyn) 
         {
-            $color = "bgcolor=\"$color_dynamic_active\""; 
+            $color = "warning";
+	    $bgcolor_type = "active text-danger strong"; 
             $url = "<a href=\"active.php?username=$username&token=$token&ip=$ip\">";
-            $username_db = $url.($row_dyn->computername).'</a>';
+            $username_db = '<i class="fa fa-asterisk" aria-hidden="true"></i><strong> '.$url.($row_dyn->computername).'</strong></a>';
             $mac = $row_dyn->mac;
         }
 
@@ -246,28 +272,27 @@ else {
 
 
         /* Start a new row in the IP table */
-        print "<!-- Record for $ip -->\n";
-    	print "<tr>";
+    	print "<tr class=\"$bgcolor_type\">";
 
         /* If admin, allow IP reservation editing */
 	    if ($access_level == $ADMIN) 
         {
             $computername = ip2computer_dynamic($ip);
-            print "<td><a class=\"ajax\" data-ip=\"$ip\" data-title=\"Editing configuration for <span class='label label-default'>$ip</span>\"  data-url=\"modify_ip.php?ip=$ip&username=$username&token=$token&computername=$computername\">$ip</a></td>\n";
-    	    print "<td class=\"text-center\"><a class=\"btn btn-info btn-sm\" href=\"https://netdisco.gsb.columbia.edu/device?tab=details&q=$ip&f=\" role=\"button\">More</a></td>\n"; 
+            print "<td><a class=\"ajax\" data-ip=\"$ip\" data-title=\"Editing configuration for <span class='label label-default'>$ip</span>\" data-url=\"modify_ip.php?ip=$ip&username=$username&token=$token&computername=$computername\">$ip</a></td>";
+    	/*    print "<td class=\"text-center\"><a class=\"btn btn-info btn-sm\" href=\"https://netdisco.gsb.columbia.edu/device?tab=details&q=$ip&f=\" role=\"button\">More</a></td>"; */
         }
         /* Otherwise we just print out the IP for users */
-        else { print "<td>$ip</td>"; }
+        else { print "<td><strong>$ip</strong></td>"; }
 
         /* Output the remaining information */
-	    print "<td bgcolor=\"$bgcolor_type\" nowrap>" . ucfirst($type). "</td>";
-        print "<td $color class=\"small\" nowrap>$username_db</td>";
-    	print "<td class=\"small\" nowrap>$clientname</td>";
-	    print "<td class=\"normal\" nowrap>$mac</td>";
+	print "<td class=\"text-$bgcolor_type\">" . ucfirst($type). "</td>";
+        print "<td class=\"$color\" nowrap>$username_db</td>";
+    	print "<td class=\"small\">$clientname</td>";
+	print "<td class=\"normal text-uppercase\">$mac</td>";
     	print "<td nowrap>$lastUpdated</td>";
     	print "<td nowrap>$lease_str</td>";
     	print "<td class=\"small\" nowrap>$notes</td>";
-    	print "</tr>\n";
+    	print "</tr>";
 	}
 }
 	
