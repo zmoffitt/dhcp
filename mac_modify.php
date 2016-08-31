@@ -1,19 +1,36 @@
-<?
-	include "includes/authenticate.inc.php";
-	include "includes/config.inc.php";
-	$access_level = access_level($username);
-	$who = $username;
-?>
-	
-<title>DHCP Manager</title>
-<center>
-<font color=0000ff>
-<h1>DHCP Manager - Register MAC</h1>
-</font>
-<? include "links.inc.php"; ?>
-<br>
+<?php
+                        
+/**     
+ * Main IP Management page for DHCP Management Console
+ * JS requested but not required - using it for form validation
+ *              
+ * PHP version 5
+ *              
+ * @category  PHP
+ * @package   PSI
+ * @author    Zachary Moffitt <zac@gsb.columbia.edu>
+ * @copyright 2016 Columbia Business School
+ */             
+                
+    /*          
+     * Configure information about the page
+     */ 
 
-<? 
+    if (empty($mac)) { $pageTitle = "Add new MAC to blacklist"; }
+    else { $pageTitle = "Add $mac to Blacklist";}
+        
+    /*  
+     * initialize the includes for functions and generate the header
+     * use this in all front-end pages to ensure uniformity
+     */ 
+        include "includes/authenticate.inc.php";
+        include "includes/config.inc.php";
+        $access_level = access_level($username);
+        $who = $username;
+
+
+    /* Use the body include to centralize formatting */
+    include "includes/body.inc.php";
 
 	$id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
 
@@ -42,13 +59,8 @@
 
                 }
 
-		print "<center>\n";
-		print "<font color=ff0000>\n";
-		print "<h3>MAC Record Updated!</h3>\n";
-                print "<b><i><small>(Will Take Effect In About 1 Minute)</small></i></b>\n";
-		print "</font>\n";
-		print "</center>\n";
-
+                print "<h3 class=\"text-center text-success\"><i class=\"fa fa-check-circle\" aria-hidden=\"true\"></i> Successfully updated: $mac</h3>\n";
+                print "<button type=\"button\" id=\"complete\" class=\"btn btn-success btn-block\" data-dismiss=\"modal\">Close</button></div>\n";
 	}
 	
 	else{
@@ -63,54 +75,81 @@
        		}	
 
 	        $row = mysql_fetch_object($result);
+?>
 
-		print "<center>\n";
-		print "<table width=35% border=4 cellpadding=2 cellspacing=2>\n";
+<form data-async method="post" action="mac_modify.php" method="post" class="form-horizontal modify" role="form" id="modify">
+<input type=hidden name=action value=modify>
+<input type=hidden name=username value=<? echo $username ?>>
+<input type=hidden name=token value=<? echo $token ?>>
+<input type=hidden name=username_db_old value=<? echo $username_db ?>>
+<input type=hidden name=mac_db_old value=<? echo $mac ?>>
+<input type=hidden name=clientname_db_old value=<? echo ($row->clientname) ?>>
+<input type=hidden name=notes_db_old value=<? echo ($row->notes) ?>>
 
-                print "<form action=mac_modify.php>\n";
-                print "<input type=hidden name=action value=modify>\n";
-                print "<input type=hidden name=username value=$username>\n";
-                print "<input type=hidden name=token value=$token>\n";
-                print "<input type=hidden name=username_db_old value=$username_db>\n";
-                print "<input type=hidden name=mac_db_old value=$mac>\n";
-		print "<input type=hidden name=clientname_db_old value=\"$row->clientname\">\n";
-		print "<input type=hidden name=notes_db_old value=\"$row->notes\">\n";
+<div class="form-group row"><label class="col-xs-3 form-control-label">Computer Name</label>
+<div class="col-xs-9"><input type="text" class="form-control" name="username_db" value="<? echo $username_db; ?>" placeholder="<? echo $username_db ?>"></div></div>
 
-		print "<tr><td><b>Computer Name:</b></td><td><input type=text name=username_db value=\"$row->username\"</td></tr>\n";
-		print "<tr><td><b>Client Name:</b></td><td><input type=text name=clientname value=\"$row->clientname\"</td></tr>\n";
-		print "<tr><td><b>MAC:</b></td><td><input type=text name=mac value=\"$row->mac\"</td></tr>\n";
-                print "<tr><td><b>Notes:</b></td><td><textarea name=notes cols=30 rows=4>$row->notes</textarea></td></tr>\n";
+<div class="form-group row"><label class="col-xs-3 form-control-label">Client Name</label>
+<div class="col-xs-9"><input type="text" class="form-control" name="clientname" value="<? echo $clientname; ?>" placeholder="<? echo $clientname ?>"></div></div> 
 
-		print "<tr><td colspan=2 align=center>\n";
+<div class="form-group row"><label class="col-xs-3 form-control-label">MAC Address</label>
+<div class="col-xs-9"><input type="text" class="form-control text-uppercase" name="mac" value="<? echo $mac; ?>" placeholder="<? echo $mac ?>"></div></div>
+
+<div class="form-group row"><label class="col-xs-3 form-control-label">Computer Name</label>
+<div class="col-xs-9"><textarea name="notes" class="form-control" rows="4" value="<? echo ($row->notes); ?>" placeholder="<? echo ($row->notes); ?>"><? echo ($row->notes); ?></textarea></div></div>
+
+<div class="form-group row"><label class="col-xs-3 form-control-label">Update on</label>
+<div class="col-xs-9">
+<?
 
                 for (reset($dhcp_partners); $key = key($dhcp_partners); next($dhcp_partners)){
                         $selected = "CHECKED";
 
-                        // Uncomment following lines to select local server
-                        // only, by default.
-
-                        // $selected = "";
-                        // if (strcmp($identifier, $key) == 0){
-                        //      $selected = "CHECKED";
-                        // }
-
-                        print "<input $selected type=checkbox name=partner_$key value=1><b>" . ucfirst($key) . "</b>\n";
+                        print "<div class=\"checkbox\"><label class=\"text-uppercase\"><input $selected type=checkbox name=partner_$key value=1><b>" . ucfirst($key) . "</b></label></div>\n";
 
                 }
 
-		print "</td></tr>\n";
-
-		print "<tr><td colspan=2 align=center><input type=submit value=Modify></td></tr>\n";
-
-                print "</form>\n";
-		print "</td></tr>\n";
-		
-		print "</table>\n";
-		print "</center>\n";
-		print "<br>\n";
-
 	}
 
-	include "$footer";
-
 ?>
+</div></div>
+<div id="doSubmitConfirm" class="form-group row text-center">
+<button name="cancel" type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+<button name="modify" type="submit" class="btn btn-warning">Modify <? echo $mac ?></button></div>
+</div>
+</form>                         
+
+<script>
+$(document).ready(function() {
+jQuery(function() {
+    $('form[data-async]').on('submit', function(event) {
+        event.preventDefault()
+        var $form = $(this);
+
+    if ( $(this).data('requestRunning') ) {
+        return;
+    }
+
+    $(this).data('requestRunning', true);
+
+        $.ajax({
+            type: $form.attr('method'),
+            url: $form.attr('action'),
+            data: $form.serialize(),
+
+            success: function(data, status) {
+                $("#doSubmitConfirm").addClass( "hidden" );
+                $($.parseHTML(data)).appendTo(".modal-body");
+            },
+
+            complete: function() {
+            $(this).data('requestRunning', false);
+        }
+        });
+
+        event.preventDefault();
+    });
+});
+});
+</script>
+</body>

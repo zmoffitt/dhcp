@@ -292,11 +292,11 @@
 <b>Between:</b>
 
 <select name=from_month>
-<? include "months.inc.php" ?>
+<? include "includes/months.inc.php" ?>
 </select>
 
 <select name=from_day>
-<? include "days.inc.php" ?>
+<? include "includes/days.inc.php" ?>
 </select>
 
 <?
@@ -324,11 +324,11 @@
 <b>And:</b>
 
 <select name=to_month>
-<? include "months.inc.php" ?>
+<? include "includes/months.inc.php" ?>
 </select>
 
 <select name=to_day>
-<? include "days.inc.php" ?>
+<? include "includes/days.inc.php" ?>
 </select>
 
 <?

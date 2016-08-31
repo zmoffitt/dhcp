@@ -73,6 +73,14 @@ td{
 	    margin-top: 150px;
             position:absolute;
         }
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 140px;
+}
 </style>
 </head>
 <body>
@@ -89,7 +97,7 @@ td{
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="defaultNavbar1">
       <ul class="nav navbar-nav">
-        <li role="presentation" <?= ($activePage == 'main') ? 'class="active"':''; ?>><a href="main.php?subnet=172&<? echo $authURL; ?>">Home<span class="sr-only">(current)</span></a></li>
+        <li role="presentation" <?= ($activePage == 'stats') ? 'class="active"':''; ?>><a href="stats.php?<? echo $authURL; ?>">Home<span class="sr-only">(current)</span></a></li>
 	<?php 
         for (reset($dhcp_partners); $key = key($dhcp_partners); next($dhcp_partners)){
                 if (strcmp($identifier, $key) != 0){
@@ -104,14 +112,15 @@ td{
             <li><a href="/dhcp/dhcpd_logs.php?username=<? echo $username; ?>&token=<? echo $token; ?>">Search Daemon Logs</a></li>
             <li><a href="/dhcp/search.php?username=<? echo $username; ?>&token=<? echo $token; ?>">Search Client Logs</a></li>
             <li class="divider"></li>
-            <li><a href="#">DHCP Statistics</a></li>
+            <li><a href="/dhcp/stats.php?<? echo $authURL; ?>">DHCP Statistics</a></li>
           </ul>
         </li>
           <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">System Administration<span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
 	    <li class="dropdown-header">Main Settings</li>
             <li><a href="main.php?subnet=172&username=<? echo $username; ?>&token=<? echo $token; ?>">IP Management</a></li>
-	    <li><a href="mac.php?username=<? echo $username; ?>&token=<? echo $token; ?>">MAC Address Management</a></li>
+	    <li><a href="blacklist.php?username=<? echo $username; ?>&token=<? echo $token; ?>">MAC Blacklist Management</a></li>
+	    <li><a href="mac.php?username=<? echo $username; ?>&token=<? echo $token; ?>">Registered MAC List Management</a></li>
             <li><a href="modify_subnet.php?username=<? echo $username; ?>&token=<? echo $token; ?>">Subnet Management</a></li>
 	    <li class="divider"></li>
 	    <li class="dropdown-header">System Management</li>
@@ -119,31 +128,21 @@ td{
             <li <? ($activePage == 'staff') ? 'class="active"':''; ?>><a href="staff.php?username=<? echo $username; ?>&token=<? echo $token; ?>">User Administration</a></li>
             <li class="divider"></li>
 	    <li class="dropdown-header">System Operations</li>
-            <li><a href="#"><span class="label label-danger">Trigger DHCPd Service Reload</a></li>
+	    <li><a class="ajax" data-ip="restartDHCP" data-title="<h3 class='text-danger'>DHCPd is restarting<h3>" role="button" data-url="/dhcp/sys/test.php?q=mini&username=<? echo $username; ?>&token=<? echo $token; ?>"><span class="label label-danger">Trigger DHCPd Service Reload</a></li>
           </ul>
         </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <?php
-/*
-$daemon = `ps auxw | grep -i dhcpd | grep -iv grep`;
-$fields = split("[ ]+", $daemon);
+	$daemon = `ps auxw | grep -i dhcpd | grep -iv grep`;
+	$fields = split("[ ]+", $daemon);
+	$pid = $fields[0];
+	$time = $fields[8];
 
-$pid = $fields[0];
-$time = $fields[8];
+	if ($daemon) { $status = "<span class=\"label label-success\">DHCPd OK <i class=\"fa fa-check-circle\" aria-hidden=\"true\"></i>"; }
+	else { $status = "<span class=\"label label-danger\">DHCPd Error <i class=\"fa fa-exclamation-triangle\" aria-hidden=\"true\"></i>"; }
 
-// if daemon is running
-if ($daemon){
-        $string = "<li class=\"text-success\"><a target=\"_blank\" href=\"/dhcp/status/?username=$username&token=$token\">System OK <span class=\"glyphicon glyphicon-ok-sign text-success\"></span></a></li>";
-}
-
-// if daemon is NOT running
-else{
-        $string = "<li class=\"text-danger\"><a class=\"_blank\" href=\"/dhcp/status/?username=$username&token=$token\">System Error <span class=\"glyphicon glyphicon-exclamation-sign text-danger\"></span></a></li>";
-}
-
-print "$string\n";
-*/
+	print "<li><a target=\"_blank\" href=\"/dhcp/status/?username=$username&token=$token\">$status</span></a></li>\n";
 ?>
         <li><a href="/dhcp/index.php?q=logout">Sign Out</a></li>
       </ul>

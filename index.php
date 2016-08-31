@@ -12,6 +12,12 @@
  * @copyright 2016 Columbia Business School
  */
 
+    /*                  
+     * Configure information about the page
+     */                 
+                        
+    $pageTitle = "Login Required";
+
 /*
  * initialize the includes for functions and generate the header
  * use this in all front-end pages to ensure uniformity
@@ -42,7 +48,7 @@
             if ($token) {
                 $access_level = access_level($username);
                 if ($access_level == $ADMIN || $access_level == $READ) {
-                    header("Location: main.php?subnet=172&username=$username&token=$token&refresh_rate=$default_refresh_rate");
+                    header("Location: stats.php?username=$username&token=$token&refresh_rate=$default_refresh_rate");
                 } else {
                     exit(header("Location: index.php?q=notAuthorized"));
                 }

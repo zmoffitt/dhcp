@@ -1,18 +1,45 @@
-<?
-	include "functions.inc.php";
-	include "config.inc.php";
-?>
+<?php
 
-<title>DHCP Manager</title>
-<center>
-<font color=0000ff>
-<h1>DHCP Manager - IP Management</h1>
-</font>
+/**
+ * IP information management page for DHCP Management Console
+ * JS requested but not required - using it for form validation
+ *
+ * PHP version 5
+ *
+ * @category  PHP
+ * @package   PSI
+ * @author    Zachary Moffitt <zac@gsb.columbia.edu>
+ * @copyright 2016 Columbia Business School
+ */
 
-</center>
-<br>
+    /*  
+     * Configure information about the page
+     */
 
-<? 
+    $pageTitle = "Modify IP: $ip ";
+
+
+    /*
+     * initialize the includes for functions and generate the header
+     * use this in all front-end pages to ensure uniformity
+     */
+
+        include "includes/authenticate.inc.php";
+        include "includes/config.inc.php";
+        include "includes/lease2name.inc.php";
+        include "includes/header.inc.php";
+    include_once "includes/functions.inc.php";
+
+    /* Push and pull vars between pages */
+
+    $_GET['username'] = $username;
+        $access_level = access_level($username);
+        $who = $username;
+        $management_of = "ip";
+
+    /* Use the body include to centralize formatting */
+    include "includes/body.inc.php";
+
 
 	include "lease2name.inc.php";
 
@@ -31,17 +58,14 @@
 	print "<center>\n";
 
 	$time_string = date("Y-m-d H:i:s");
-	print "<b><font color=ff0000>Current Time: <u>$time_string</u></font></b><br><br>\n";
+	print "<h4>Current System Time: <samp>$time_string</samp></h4><hr />\n";
 
-	print "<table border=4 cellpadding=2 cellspacing=2 width=60%>\n";
-	print "<tr><td><b>IP:</b></td><td>$ip&nbsp;</td></tr>\n";
+	print "<table class=\"table table-striped table-condensed\" width=\"100%\" id=\"subnetList\">\n";
+	print "<tr><td><b>IP Address:</b></td><td>$ip</td></tr>\n";
 
 	// pull data from 'ip' table as well
 	$str_sql2 = "SELECT * FROM $db_tablename_ip WHERE ip = '$ip'";
         $result2 = mysql_db_query($db_name, $str_sql2, $id_link);
-
-	// print "Query 1: *$str_sql1*<br>\n";
-	// print "Query 2: *$str_sql2*<br>\n";
 
         while ($row2 = mysql_fetch_object($result2)){
 
@@ -65,7 +89,7 @@
 	print "<tr><td><b>IP Type:</b></td><td>" . ucfirst($ip_type) . "&nbsp;";
 
 	if (strcmp($ip_type, "dynamic") == 0){
-		print "<b>(No Reservation)</b>";
+		print "<mark class=\"text-danger\">(No Reservation Found!)</mark>";
 	}
 	
 	print "</td></tr>\n";
@@ -74,14 +98,8 @@
 		$computername = "N/A";
 	}
 
-	print "<tr><td><b>Computer Name:</b></td><td>\n";
-	if ($name_lookup == 1){
-		print "<a target=lookup href=$name_lookup_url?fullname=$computername>$computername&nbsp;</a>\n";
-	}
-
-	else{
-		print "$computername&nbsp;\n";
-	}
+	print "<tr><td><b>Computer Name:</b></td>\n";
+	print "<td class=\"normal text-uppercase\">$computername\n";
 	print "</td></tr>\n";
 
 	if (! $mac){
@@ -105,16 +123,90 @@
 	print "<tr>\n";
 	print "<td align=center colspan=2>\n";
 
-	print "<img src=green-ball.gif>\n";
-	print "<a href=mac_add.php?username=$username&token=$token&username_db=$computername&mac=$mac>Register Mac</a>\n";
+	print "<a class=\"ajax btn btn-success\" data-title=\"Adding Registration for: <span class='label label-default'>$mac</span>\" data-url=mac_add.php?username=$username&token=$token&username_db=$computername&mac=$mac>Register Mac</a>\n";
 
-	print "<img src=red-ball.gif>\n";
-	print "<a href=blacklist_add.php?username=$username&token=$token&username_db=$computername&mac=$mac>Blacklist Mac</a>\n";
+	print "<a class=\"ajax btn btn-danger\" data-title=\"Adding to Blacklist: <span class='label label-danger'>$mac</span>\" data-url=blacklist_add.php?username=$username&token=$token&username_db=$computername&mac=$mac>Blacklist Mac</a>\n";
 
 	print "</td>\n";
 	print "</tr>\n";
 
 	print "</table>\n";
-	include "$footer";
 
 ?>
+
+<!-- Callback to confirm page load -->
+<script type="text/javascript">
+$(window).load(function() {
+    $('#status').fadeOut();
+    $('#preloader').delay(50).fadeOut('fast');
+    $('#ipTable').removeClass('hidden');
+})
+</script>
+<script>
+$(document).ready(function() {
+jQuery(function() {
+    $('form[data-async]').on('submit', function(event) {
+        event.preventDefault()
+        var $form = $(this);
+
+    if ( $(this).data('requestRunning') ) {
+        return;
+    }
+
+    $(this).data('requestRunning', true);
+
+        $.ajax({
+            type: $form.attr('method'),
+            url: $form.attr('action'),
+            data: $form.serialize(),
+
+            success: function(data, status) {
+          $(".bootbox-body").html(data);
+    },
+        complete: function() {
+            $(this).data('requestRunning', false);
+        }
+        });
+
+        event.preventDefault();
+    });
+});
+});
+
+$('.btn').on('click', function() {
+    var $this = $(this);
+  $this.button('loading');
+    setTimeout(function() {
+       $this.button('reset');
+   }, 1000);
+});
+
+$(document).ready(function() {
+    jQuery(function() {
+        $('.ajax').on('click', function(event) {
+        event.preventDefault()
+         if ( $(this).data('requestRunning') ) { return; }
+
+        $(this).data('requestRunning', true);
+	var title = $(this).attr('data-title');
+        $.ajax({
+            type: 'GET',
+            url: $(this).attr('data-url'),
+            data: $(this).serialize(),
+            success: function(data, status) 
+            {
+		$('.modal-title').html(title);
+                $('.bootbox-body').html(data);
+            },
+            complete: function() 
+            {
+                $(this).data('requestRunning', false);
+            }
+        });
+
+        event.preventDefault();
+        });
+    });
+});
+
+</script>

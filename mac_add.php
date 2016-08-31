@@ -1,21 +1,39 @@
-<?
+<?php
+                                
+/**                             
+ * Main IP Management page for DHCP Management Console
+ * JS requested but not required - using it for form validation
+ *                                      
+ * PHP version 5                
+ *          
+ * @category  PHP               
+ * @package   PSI                       
+ * @author    Zachary Moffitt <zac@gsb.columbia.edu>
+ * @copyright 2016 Columbia Business School
+ */                     
+
+    /*          
+     * Configure information about the page
+     */         
+    if (empty($mac)) { $pageTitle = "Add new MAC to registered systems";} 
+    else {$pageTitle = "Add $mac to known machine list";}
+                
+                
+    /*          
+     * initialize the includes for functions and generate the header
+     * use this in all front-end pages to ensure uniformity
+     */   
+
 	include "includes/authenticate.inc.php";
 	include "includes/config.inc.php";
 	$access_level = access_level($username);
 	$who = $username;
-?>
-	
-<title>DHCP Manager</title>
-<body onload="changeScreenSize(<? echo $popup_height; ?>,<? echo $popup_width; ?>)">
-<center>
-<font color=0000ff>
-<h1>DHCP Manager - Register MAC</h1>
-</font>
+	$action = $_POST['action'];
 
-<br>
+?>	
 
-<? 
-	if (strcmp($action, "add") == 0){
+<? if (strcmp($action, "add") == 0): ?>
+<?
 		
 		if (! $username_db || ! $mac){
 			print "<center><font color=ff0000>\n";
@@ -26,7 +44,8 @@
 		}
 
                 // make sure it's an administrator
-		include "admin_check.inc.php";
+		include "includes/admin_check.inc.php";
+		$ip_from = $REMOTE_ADDR; 
 
                 // make sure mac is in right format
                 check_mac_format($mac);
@@ -40,7 +59,7 @@
 		                mac_exist($dhcp_partners[$key], $key, $mac);
 			}
 
-		}	
+		}
 
                 // make sure computername only contains valid chars
                 check_computername_format($username_db);
@@ -76,60 +95,50 @@
 		print "</font>\n";
 		print "</center><br>\n";
 
-                // reset variables
-                $username_db = "";
-                $mac = "";
-
-	}		
-
 ?>
 
-<center>
-<table border=2 cellspacing=2 cellpadding=2 width=50%>
-
-<form METHOD=POST action=mac_add.php>
+<? else: ?>
+<form data-async method="post" action="mac_add.php" class="form-horizontal add" role="form" id="add">
 <input type=hidden name=action value=add>
-<input type=hidden name=username value=<? echo "$username"; ?>>
-<input type=hidden name=token value=<? echo "$token"; ?>>
+<input type=hidden name=username value="<? echo $username ?>">
+<input type=hidden name=token value="<? echo $token ?>">
 
-<tr>
-<td bgcolor=dddddd align=center colspan=2>
-<font color=ff0000><b>Register a MAC</b></font>
-</td>
-</tr>
+<div class="form-group row">
+<label for="name" class="col-xs-3 control-label">Computer Name</label>
+<div class="col-xs-9">
+<input type="text" class="form-control" name="username_db" placeholder="<? echo $username_db ?>" required autofocus/> 
+</div></div>
+<div class="form-group row">
+<label for="name" class="col-xs-3 control-label">Client Name</label>
+<div class="col-xs-9">
+<input type="text" class="form-control" name="clientname" placeholder="<? echo $clientname ?>" required />
+</div></div>
 
-<tr>
-<td><b>Computer Name:</b></td>
-<td><input type=text name=username_db value="<? echo $username_db; ?>"></td>
-</tr>
-
-<td><b>Client Name:</b></td>
-<td><input type=text name=clientname></td>
-</tr>
-
-<td><b>MAC:</b></td>
-<td><input type=text name=mac value="<? echo $mac; ?>"></td>
-
-</tr>
+<div class="form-group row">
+<label for="name" class="col-xs-3 control-label">MAC Address</label>
+<div class="col-xs-9">
+<input type="text" class="form-control" name="mac" placeholder="<? echo $mac ?>" value="<? echo $mac; ?>" required />
+</div></div>
 
 <?
 
 $action_date = date("Y-m-d");
 $action_time = date("H:i");
-$notes_string = "Registered on $action_date @ $action_time.";
+$notes_string = "Registered on $action_date @ $action_time by $who.";
 
 ?>
 
-<td><b>Notes:</b></td>
-<td><textarea name=notes cols=30 rows=4><? echo $notes_string; ?></textarea></td>
-</tr>
+<div class="form-group row">
+<label for="name" class="col-xs-3 control-label">Notes</label>
+<div class="col-xs-9">
+<textarea name=notes class="form-control" rows=4><? echo $notes_string; ?></textarea>
+</div></div>
+<div class="form-group row">
+<label for="name" class="col-xs-3 control-label">Update on:</label>
+<div class="col-xs-9">
 
 <?
 	if ($dhcp_replicate == 1){
-
-		print "<tr>\n";
-		print "<td><b>Update On:</font></b></td>";
-		print "<td>\n";
 
 		for (reset($dhcp_partners); $key = key($dhcp_partners); next($dhcp_partners)){
 			$selected = "CHECKED";
@@ -142,27 +151,51 @@ $notes_string = "Registered on $action_date @ $action_time.";
 			// 	$selected = "CHECKED";
 			// }
 
-			print "<input $selected type=checkbox name=partner_$key value=1><b>" . ucfirst($key) . "</b>\n";
+			print "<input $selected type=checkbox name=partner_$key value=1><b> " . ucfirst($key) . "</b>\n";
 		}
-
-		print "</td></tr>\n";
 
 	}
 
 ?>
-
-<tr><td align=center colspan=2>
-<input type=submit name=selection value="Register MAC">
-</td></tr>
-
+</div></div>
+<div id="doSubmitConfirm" class="form-group row text-center">
+<button type="button" class="btn btn-secondary" data-dismiss="modal" onClick="window.location.reload();">Cancel</button>  
+<button class="btn btn-success" type="submit" name="add">Register MAC <? echo $mac ?></button>
+</div>
 </form>
-</tr>
-</table>
-</center>
-<br>
 
-<?
-	include "$footer";
-?>
+<script>
+$(document).ready(function() {
+jQuery(function() {
+    $('form[data-async]').on('submit', function(event) {
+        event.preventDefault()
+        var $form = $(this);
 
+    if ( $(this).data('requestRunning') ) {
+        return;
+    }
+
+    $(this).data('requestRunning', true);
+
+        $.ajax({
+            type: $form.attr('method'),
+            url: $form.attr('action'),
+            data: $form.serialize(),
+
+            success: function(data, status) {
+                $("#doSubmitConfirm").addClass( "hidden" );
+                $($.parseHTML(data)).appendTo(".bootbox-body");
+            },
+
+            complete: function() {
+            $(this).data('requestRunning', false);
+        }
+        });
+
+        event.preventDefault();
+    });
+});
+});
+</script>
 </body>
+<? endif; ?>

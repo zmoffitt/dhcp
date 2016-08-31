@@ -83,6 +83,7 @@
         $vlan = $row->vlan;
 	$netmask = $row->mask;
         $subnet_notes = $row->notes;
+	$enabled = $row->enabled;
     }
 
     /* Calculate the CIDR format of the netmask */
@@ -136,17 +137,6 @@
                 <td class="success text-center text-success strong"><strong><? echo $total_dynamic-$total_dynamic_active ?></strong></td>
             </tr>
 
-
-<?
- /*
-            <tr>
-                <td>Total Unallocated IPs:</td>
-                <td><? echo $total_free ?></td>
-            </tr>
-*/
-?>
-
-
             <tr>
                 <td>Total IP Reservations:</td>
                 <td class="text-center"><? echo $total_reserved ?></td>
@@ -155,15 +145,6 @@
                 <td>Total Static IPs:</td>
                 <td class="info text-center text-info"><strong><? echo $total_static ?></strong></td>
             </tr>
-<?
-/*
-            <tr>
-                <td>Total Unknown IPs:</td>
-                <td><? echo $total_unknown ?></td>
-            </tr>
-*/
-?>
-
         </table>
 
     <!-- Preloader -->
@@ -178,18 +159,25 @@
     <!-- Content -->
 <div id="ipTable" class="hidden"><div class="col-xs-12">
     <div class="panel panel-default">
-        <div class="panel-heading text-center">
-            <h4><samp><? echo $pattern ?>.0/<? echo $mask ?></samp></br>
-            <small class="text-muted"><samp>[VLAN: <? echo $vlan ?> | Total IPs: <? echo $ip_count ?>]</samp></small></h4>
+        <div class="panel-heading">
+        <? if ($access_level == $ADMIN): ?>
+	<a class="ajax btn btn-default pull-right" data-ip=" " data-title="Editing configuration for subnet: <span class='label label-default'><? echo $pattern.".0" ?></span>" data-url="modify_subnet.php?q=xmini&subnet=<? echo $subnet ?>&username=<? echo $username ?>&token=<? echo $token ?>" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Loading...">Edit options</a>
+	<? endif; ?>
+            <h4><samp><? echo $pattern ?>.0/<? echo $mask ?></samp><br />
+            <small class="text-muted"><samp>VLAN: <? echo $vlan ?> | Total IPs: <? echo $ip_count ?></samp></small></h4>
             <h5 class="text-muted"><? echo $subnet_notes ?></h5>
+	    <h4>
+           <? if ($enabled == '0'): ?><span class="label label-danger">DHCP Disabled</span>
+            <? else: ?><span class="label label-success">DHCP Enabled</span>
+            <? endif; ?></h4>
         </div>
         <div class="panel-body">
-            <table class="table table-hover table-condensed" width="100%" id="subnetList">
+            <table class="display table table-hover table-condensed" width="100%" id="subnetList">
                 <thead>
                     <tr>
                         <th>IP Address</th>
                         <? if ($access_level == $ADMIN): ?>
-                        <!--<th>Netdisco</th>-->
+                        <th>Netdisco</th>
                         <? endif; ?>
                         <th>Type</th>
                         <th>Computer Name</th>
@@ -222,7 +210,7 @@ else {
     	$mac = $row->mac;
     	$lease = $row->lease;
     	$notes = $row->notes;
-    	$lastUpdated = $row->lastUpdated;
+    	$lastUpdated = $row->lastupdated;
 
         /* set the field to N/A if empty to keep it clean */
     	if (!$ip) $ip = "--N/A--";
@@ -254,10 +242,15 @@ else {
         /* Adjust the output if data was discovered from the dynamic table */
         if ($row_dyn) 
         {
-            $color = "warning";
-	    $bgcolor_type = "active text-danger strong"; 
-            $url = "<a href=\"active.php?username=$username&token=$token&ip=$ip\">";
-            $username_db = '<i class="fa fa-asterisk" aria-hidden="true"></i><strong> '.$url.($row_dyn->computername).'</strong></a>';
+            $color = "warning text-uppercase";
+	    $bgcolor_type = "active text-danger strong";
+	    if (strcmp($row_dyn->computername, "") == 0) {
+		$computername = "--n/a--";
+	    } else {
+		$computername = $row_dyn->computername;
+	    }
+            $url = "<a class=\"ajax\" data-ip=\"$ip\" data-title=\"DHCP Lease Information: <span class='label label-default'>$ip</span><small><samp>[$computername]</samp></small>\" data-url=\"active.php?ip=$ip&q=xmini&username=$username&token=$token&computername=$computername\">";
+            $username_db = '<i class="fa fa-asterisk" aria-hidden="true"></i><strong>'.$url.$computername.'</strong></a>';
             $mac = $row_dyn->mac;
         }
 
@@ -279,7 +272,8 @@ else {
         {
             $computername = ip2computer_dynamic($ip);
             print "<td><a class=\"ajax\" data-ip=\"$ip\" data-title=\"Editing configuration for <span class='label label-default'>$ip</span>\" data-url=\"modify_ip.php?ip=$ip&username=$username&token=$token&computername=$computername\">$ip</a></td>";
-    	/*    print "<td class=\"text-center\"><a class=\"btn btn-info btn-sm\" href=\"https://netdisco.gsb.columbia.edu/device?tab=details&q=$ip&f=\" role=\"button\">More</a></td>"; */
+    	    print "<td class=\"text-center\"><a class=\"btn btn-primary btn-sm\" target=\"_blank\" href=\"https://netdisco.gsb.columbia.edu/search?tab=node&q=$ip&stamps=on&deviceports=on&daterange=&mac_format=IEEE\" role=\"button\">More</a></td>";
+	    if (($mac != '-') && (strcmp($mac, '00:00:00:00:00:00') == 1)) { $mac = "<a target=\"_blank\" href=\"https://netdisco.gsb.columbia.edu/search?tab=node&q=$mac&stamps=on&deviceports=on&daterange=&mac_format=IEEE\"> $mac</samp>"; }
         }
         /* Otherwise we just print out the IP for users */
         else { print "<td><strong>$ip</strong></td>"; }
@@ -288,7 +282,7 @@ else {
 	print "<td class=\"text-$bgcolor_type\">" . ucfirst($type). "</td>";
         print "<td class=\"$color\" nowrap>$username_db</td>";
     	print "<td class=\"small\">$clientname</td>";
-	print "<td class=\"normal text-uppercase\">$mac</td>";
+	print "<td class=\"text-uppercase\"><samp>$mac</samp></td>";
     	print "<td nowrap>$lastUpdated</td>";
     	print "<td nowrap>$lease_str</td>";
     	print "<td class=\"small\" nowrap>$notes</td>";
@@ -313,7 +307,26 @@ $(window).load(function() {
 <!-- Include Javascript for window handling --> 
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.ajax').on('click', function() {
+        var table = $('#subnetList').DataTable({
+            "processing": false,
+            "serverSide": false,
+	    "stateSave": false,
+	    "dom": '<"top"iflp<"clear">>rt<"bottom"iflp<"clear">>',
+            "order": [],
+            "language": {   
+                "lengthMenu": "Show _MENU_ IPs per page",
+                "zeroRecords": "No IPs were returned",
+                "info": "Showing page _PAGE_ of _PAGES_",
+                "infoEmpty": "No IP records available",
+                "infoFiltered": "(filtered from _MAX_ total IPs)"
+            },
+            "lengthMenu": [[254, 508, 1016, -1], 
+                     [254, 508, 1016, "All"]], 
+            "columnDefs": [{ "orderable": true, }]} 
+        );
+$('#subnetList tbody').click('tr', function () {
+    var tdata = table.row( this ).data();
+    $('.ajax').click(function(tdata) {
     var op = $(this).attr('data-op');
     var id = $(this).attr('data-id');
     var username = $(this).attr('data-username');
@@ -325,6 +338,43 @@ $(document).ready(function() {
 
         $.ajax ({
             url: $(this).attr('data-url'),
+	    crossDomain : true,
+            method: 'GET',
+        })
+        
+        .success (function(response) {
+            bootbox.dialog({
+                title:  title,
+                message: $(response),
+                show: false, // We will show it manually later
+                onEscape: function() { console.log("Escape!"); },
+                backdrop: true,
+                callback: function() { $('.bootbox.modal').modal('hide'); }
+            })
+                
+            .on('shown.bs.modal', function() {
+                $('#modalBody').show()
+            })
+
+            .on('hide.bs.modal', function(e) { parent.location.reload(true); })
+
+            .modal('show');
+        });
+    });
+});
+    $('.ajax').click(function(tdata) {
+    var op = $(this).attr('data-op');
+    var id = $(this).attr('data-id');
+    var username = $(this).attr('data-username');
+    var token = $(this).attr('data-token');
+    var grp = $(this).attr('data-grp');
+    var title = $(this).attr('data-title');
+    var ip = $(this).attr('data-ip');
+    var $form = $(this);
+
+        $.ajax ({
+            url: $(this).attr('data-url'),
+            crossDomain : true,
             method: 'GET',
         })
         

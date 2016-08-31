@@ -1,20 +1,38 @@
-<?
+<?php   
+        
+/**     
+ * Main IP Management page for DHCP Management Console
+ * JS requested but not required - using it for form validation
+ *          
+ * PHP version 5
+ *          
+ * @category  PHP
+ * @package   PSI
+ * @author    Zachary Moffitt <zac@gsb.columbia.edu>
+ * @copyright 2016 Columbia Business School
+ */
+        
+    /*
+     * Configure information about the page
+     */
+
+    if (empty($mac)) { $pageTitle = "Add new MAC to blacklist"; }
+    else { $pageTitle = "Add $mac to Blacklist";} 
+        
+    /*  
+     * initialize the includes for functions and generate the header
+     * use this in all front-end pages to ensure uniformity
+     */ 
 	include "includes/authenticate.inc.php";
 	include "includes/config.inc.php";
 	$access_level = access_level($username);
 	$who = $username;
-?>
+
+
+    /* Use the body include to centralize formatting */
+    include "includes/body.inc.php";
+
 	
-<title>DHCP Manager</title>
-<body onload="changeScreenSize(<? echo $popup_height; ?>,<? echo $popup_width; ?>)">
-<center>
-<font color=0000ff>
-<h1>DHCP Manager - Blacklist MAC</h1>
-</font>
-
-<br>
-
-<? 
 	if (strcmp($action, "add") == 0){
 
 		if (! $username_db || ! $mac){
@@ -85,18 +103,11 @@
 ?>
 
 <center>
-<table border=2 cellspacing=2 cellpadding=2 width=40%>
-
-<form action=blacklist_add.php>
+<table class="table table-striped table-condensed" width="100%" id=blacklistIP"> 
+<form data-async method="post" action="blacklist_add.php" method="post" class="form-horizontal modify" role="form" id="add">
 <input type=hidden name=action value=add>
 <input type=hidden name=username value=<? echo "$username"; ?>>
 <input type=hidden name=token value=<? echo "$token"; ?>>
-
-<tr>
-<td bgcolor=dddddd align=center colspan=2>
-<font color=ff0000><b>Blacklist a MAC</b></font>
-</td>
-</tr>
 
 <tr>
 <td><b>Computer Name:</b></td>
@@ -108,7 +119,7 @@
 </tr>
 
 <td><b>MAC:</b></td>
-<td><input type=text name=mac value="<? echo $mac; ?>"></td>
+<td><input type=text name=mac placeholder="<? echo $mac; ?>"></td>
 
 </tr>
 
@@ -133,15 +144,6 @@ $notes_string = "Blacklisted on $action_date @ $action_time.";
 
                 for (reset($dhcp_partners); $key = key($dhcp_partners); next($dhcp_partners)){
                         $selected = "CHECKED";
-
-                        // Uncomment following lines to select local server
-                        // only, by default.
-
-                        // $selected = "";
-                        // if (strcmp($identifier, $key) == 0){
-                        //      $selected = "CHECKED";
-                        // }
-
                         print "<input $selected type=checkbox name=partner_$key value=1><b>" . ucfirst($key) . "</b>\n";
                 }
 
@@ -152,17 +154,11 @@ $notes_string = "Blacklisted on $action_date @ $action_time.";
 ?>
 
 <tr><td align=center colspan=2>
-<input type=submit name=selection value="Blacklist MAC">
+<input class="btn btn-danger" type="submit" name="selection" value="Blacklist MAC <? echo $mac ?>">
 </td></tr>
 
 </form>
 </tr>
 </table>
 </center>
-<br>
-
-<?
-	include "$footer";
-?>
-
 </body>

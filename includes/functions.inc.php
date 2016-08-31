@@ -71,14 +71,16 @@ function auth_string($username){
 
 
 // the matching of the mac is case-insensitive
-function mac_exist($host, $server, $mac){
+function mac_exist($host, $server, $mac) {
+    require "config.inc.php";
     $id_link_mac = mysql_pconnect($host, $db_username, $db_password);
-    $str_sql_mac = "SELECT * FROM $db_tablename_ip WHERE mac = '$mac'";
+    $str_sql_mac = "SELECT * FROM $db_tablename_ip WHERE mac like '%$mac%'";
     $result_mac = mysql_db_query($db_name, $str_sql_mac, $id_link_mac);
 
-    if (! $result_mac){
-        print "Failed to submit!<br>\n";
-        include "$footer";
+    if (! $result_mac) {
+	echo $top;
+        print "An error occured. It seems the MAC address doesn't exist in the table.\n";
+	echo $bottom;
         exit;
     }
 
@@ -310,7 +312,7 @@ function ip_in_use($ip){
     $result_ip = mysql_db_query($db_name, $str_sql_ip, $id_link_ip);
 
     if (! $result_ip){
-        print "jdfkdjFailed to submit!<br>\n";
+        print "Failed to submit!<br>\n";
         include "$footer";
         exit;
     }
@@ -336,7 +338,7 @@ function mac_add($who, $ip_from, $host, $type, $mac, $username, $clientname, $no
 
     $result = mysql_db_query($db_name, $str_sql, $id_link);
     if (! $result){
-        print "Failed to submit!<br>\n";
+        print "An error occured:".$str_sql." did not return a valid response.<br>\n";
         include "$footer";
         exit;
     }
@@ -403,7 +405,7 @@ function mac_delete($who, $ip_from, $host, $type, $mac, $username){
 
     include "config.inc.php";
     $id_link = mysql_pconnect($host, $db_username, $db_password);
-    $str_sql = "DELETE FROM $db_tablename_ip WHERE username = '$username' AND mac = '$mac' AND ip_type = '$type'";
+    $str_sql = "DELETE FROM $db_tablename_ip WHERE username = '$username' AND mac like '%$mac%' AND ip_type = '$type'";
 
     // print "Query: *$str_sql*<br>\n";
 
@@ -691,64 +693,6 @@ function logout($username, $token, $ip_from){
         exit;
     }
 
-}
-
-// get throttled hosts
-function get_throttled(){
-
-    include "config.inc.php";
-
-    /*	$id_link = mysql_pconnect($db_hostname_cbs, $db_cbs_username, $db_cbs_password);
-
-        $str_sql = "SELECT * FROM throttled";
-
-    //print "Query: *$str_sql*<br>\n";
-
-    $result = mysql_db_query("cbs", $str_sql, $id_link);
-    if (! $result){
-    print "Failed to submit!<br>\n";
-    include "bottom.inc";
-    exit;
-    }
-
-    while ($row = mysql_fetch_object($result)){
-
-    $ip = $row->ip;
-    $throttled[$ip] = $ip;
-
-    }
-
-    return($throttled);
-     */	return;
-}
-
-// get network bandwidth excluded hosts
-function get_excluded(){
-
-    include "config.inc.php";
-    /*
-       $id_link = mysql_pconnect($db_hostname_cbs, $db_cbs_username, $db_cbs_password);
-       $str_sql = "SELECT * FROM excluded";
-
-    // print "Query: *$str_sql*<br>\n";
-
-    $result = mysql_db_query("cbs", $str_sql, $id_link);
-    if (! $result){
-    print "Failed to submit!<br>\n";
-    include "bottom.inc";
-    exit;
-    }
-
-    while ($row = mysql_fetch_object($result)){
-
-    $ip = $row->ip;
-    $excluded[$ip] = $ip;
-
-    }
-
-    return($excluded);
-     */
-    return;
 }
 
 // generate a hashed token that acts as an authentication string.

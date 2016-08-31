@@ -31,23 +31,6 @@
 
 <? if ($activePage == 'main'): ?>
     <!-- Define the main.php body -->
-    <script type="text/javascript">         
-    $(document).ready(function() {  
-        $('#subnetList').DataTable({
-            "order": [],
-            "language": {   
-                "lengthMenu": "Show _MENU_ IPs per page",
-                "zeroRecords": "Nothing IPs were returned",
-                "info": "Showing page _PAGE_ of _PAGES_",
-                "infoEmpty": "No IP records available",
-                "infoFiltered": "(filtered from _MAX_ total IPs)"
-            },
-            "lengthMenu": [[254, 508, 1016, -1], 
-                     [254, 508, 1016, "All"]], 
-            "columnDefs": [{ "orderable": true, }]} 
-        );                  
-    });
-    </script>
 
     <div class="container-fluid">
         <div class="row">
@@ -61,7 +44,7 @@
 <? /* ------ end of main.php body ------- */ ?>    
 
 
-<? elseif ($activePage == 'modify_ip'): ?>
+<? elseif (in_array($activePage, array('active','modify_ip','staff_modify','staff_delete', 'blacklist_delete', 'blacklist_modify', 'mac_add', 'mac_delete'), true )): ?>
     <!-- Define modification page body -->
         <div class="container-fluid">
         <div class="row">
@@ -69,7 +52,15 @@
 
 <? /* ------ end of modification page body ------- */ ?> 
 
-<? elseif ($activePage == 'staff'): ?>
+<? elseif (in_array($activePage, array('staff','blacklist', 'mac', 'stats'), true)): ?>
+    <script type="text/javascript">         
+        {$('#defaultList').DataTable({
+            "lengthMenu": [[50, 100, 250, -1], 
+                     [50, 100, 250, "All"]], 
+            "columnDefs": [{ "orderable": true, }]} 
+        );
+    };
+    </script>
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
@@ -77,4 +68,7 @@
     </div>
   </div>
   <hr>
+<? if ($activePage == 'stats'): ?>
+<? include "includes/subnets.inc.php"; ?>
+<? endif; ?>
 <? endif; ?>

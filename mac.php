@@ -16,7 +16,7 @@
  * Configure information about the page
  */
 
-        $pageTitle = "MAC Management";
+        $pageTitle = "Registered MAC Address Management";
 
 
 /*
@@ -26,69 +26,19 @@
         require "includes/authenticate.inc.php";
         require "includes/config.inc.php";
         require "includes/header.inc.php";
+	include_once "includes/functions.inc.php"; 
 
+	/* Push and pull vars between pages */ 
+	$_GET['username'] = $username;  
 	$access_level = access_level($username);
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DHCP Manager</title>
-<style>
-td{
-    max-width: 350px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
- .badge-success {
-background-color: #398439;
-}
-.badge-warning {
-background-color: #d58512;
-}
-</style>
-<!-- Bootstrap -->
-<link href="css/bootstrap.css" rel="stylesheet">
 
-<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-<!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-</head>
-<body>	
+    /* Use the body include to centralize formatting */
+    include "includes/body.inc.php";
 
-<center>
-<font color=0000ff>
-<h1>DHCP Manager - Register MAC</h1>
-</font>
-<br>
-
-<center>
-<h3>
-
-<a href="#" onclick="window.open('mac_add.php?username=<? echo "$username"; ?>&token=<? echo "$token"; ?>', 'mac', 'width=<? echo $popup_width; ?>, height=<? echo $popup_height; ?>');">Add a MAC Address</a>
-
-</h3>
-</center>
-
-<? 
 
         $id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
 
-	$str_sql = "SELECT * FROM $db_tablename_ip WHERE ip_type = 'registered'";
-
-        if ($orderby){
-                $str_sql .= " ORDER BY $orderby";
-        }
-
-	else{
-                $str_sql .= " ORDER BY username";
-        }
+	$str_sql = "SELECT * FROM $db_tablename_ip WHERE ip_type = 'registered' ORDER BY username";
 
         $result = mysql_db_query($db_name, $str_sql, $id_link);
 
@@ -98,34 +48,33 @@ background-color: #d58512;
                	exit;
         }
 
-//	print "Query: *$str_sql*<br>\n";
-
 	$total_rows = mysql_num_rows($result);
 
        	if ($total_rows == 0){
-		print "<center>\n";
-		print "<font color=ff0000>\n";
                 print "<b>No MAC addresses in the database!</b><br>\n";
-		print "</font>\n";
-		print "</center>\n";
        	        include "$footer";
                	exit;
         }
+?>
+    <div class="container-fluid">
+        <div class="text-right">
+        <button data-op="add" data-id="" data-username="<? echo $username ?>" data-token="<? echo $token ?>" data-udb="" data-title="Add new MAC to database" class="btn btn-default push-right opButton" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Loading..." type="button">Add MAC to Registered List</button></div>
+        <hr />
+    <div id="row"><div class="col-xs-12">
+        <table class="table table-striped table-hover table-bordered table-condensed"  id="defaultList">
+    <thead>
+        <th>Computer Name</th>
+        <th>Client Name</th>
+        <th>MAC Address</th>
+        <th>Notes</th>
 
-	print "<center>\n";
-	print "<table border=2 cellpadding=2 cellspacing=2 width=70%>\n";
-	print "<tr><td align=center colspan=7><b><u>Static MAC Table</u></b></td></tr>\n";
+    <? if ($access_level == $ADMIN): ?>
+        <th>Modify</th>
+        <th>Delete</th>
+    <? endif; ?>
 
-	print "<tr><td align=center><b><a href=mac.php?username=$username&token=$token&orderby=username>Computer Name</a></b></td>\n";
-
-	print "<td align=center><b><a href=mac.php?username=$username&token=$token&orderby=clientname>Client Name</a></b></td>\n";
-
-	print "<td align=center><b><a href=mac.php?username=$username&token=$token&orderby=mac>MAC</a></b></td>\n";
-
-	print "<td align=center><b>Notes</b></td>\n";
-	print "<td align=center><b>Delete</b></td>\n";
-	print "<td align=center><b>Modify</b></td></tr>\n";
-
+        </thead><tbody>
+<?
 	while ($row = mysql_fetch_object($result)){
 
 		$username_db = $row->username;
@@ -140,37 +89,137 @@ background-color: #d58512;
 
 		print "<tr>\n";
 
-		print "<td nowrap><small>$username_db&nbsp;</small></td>\n";
-		print "<td nowrap><small>$clientname&nbsp;</small></td>\n";
-		print "<td nowrap>&nbsp;\n";
-		print strtoupper($mac);
-		print "&nbsp;</td>\n";
-		print "<td><small>$notes&nbsp;</small></td>\n";
+                print "<td nowrap><small>$username_db</small></td>\n";
+                print "<td nowrap><small>$clientname</small></td>\n";
+                print "<td class=\"text-uppercase\"><samp>$mac</samp></td>\n";
+                print "<td><small>$notes&nbsp;</small></td>\n";
 
-		print "<td align=center nowrap>\n";
-		print "<form action=mac_delete.php>\n";
-		print "<input type=hidden name=username value=$username>\n";
-		print "<input type=hidden name=token value=$token>\n";
-		print "<input type=hidden name=username_db value=$username_db>\n";
-		print "<input type=hidden name=mac value=$mac>\n";
-		print "<input type=submit value=Delete>\n";
-		print "</form>\n";
-		print "</td>\n";
-
+                if ($access_level == $ADMIN) {
 		print "<td align=center nowrap>\n";
 		print "<form action=mac_modify.php>\n";
 		print "<input type=hidden name=username value=$username>\n";
 		print "<input type=hidden name=token value=$token>\n";
 		print "<input type=hidden name=username_db value=$username_db>\n";
 		print "<input type=hidden name=mac value=$mac>\n";
-		print "<input type=submit value=Modify>\n";
+                print "<button data-op=\"modify\" data-id=\"$mac\" data-username=\"$username\" data-token=\"$token\" data-udb=\"$username_db\" data-title=\"Modifying attributes for <span class='label label-default'>$mac</span>\" class=\"btn btn-warning opButton\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i>\" type=\"button\">Modify</button>\n";
 		print "</form>\n";
-		print "</td></tr>\n";
+		print "</td>\n";
 
+                print "<td align=center nowrap>\n";                                                                                                                                                                                           
+                print "<form action=mac_delete.php>\n";                                                                                                                                                                                       
+                print "<input type=hidden name=username value=$username>\n";                                                                                                                                                                  
+                print "<input type=hidden name=token value=$token>\n";                                                                                                                                                                        
+                print "<input type=hidden name=username_db value=$username_db>\n";                                                                                                                                                            
+                print "<input type=hidden name=mac value=$mac>\n";                                                                                                                                                                            
+                print "<button data-op=\"delete\" data-id=\"$mac\" data-username=\"$username\" data-token=\"$token\" data-udb=\"$username_db\" data-title=\"Delete MAC <samp>$mac</samp>?\" class=\"btn btn-danger opButton\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i>\" type=\"button\">Delete</button>\n";                                                                                  
+                print "</form>\n";                                                                                                                                                                                                            
+                print "</td></tr>\n"; 
+		}
 	}
-	
-	print "</table>\n";
-	print "<br><br>\n";
-	include "$footer";
+	print "</tbody></table>\n";
 
 ?>
+            </div>
+          </div>
+</div>
+</div>
+</div>
+<script>
+$(document).ready(function() {
+    $('.opButton').on('click', function() {
+        // Get the record's ID via attribute
+        var op = $(this).attr('data-op');
+        var id = $(this).attr('data-id');
+        var username = $(this).attr('data-username');
+        var token = $(this).attr('data-token');
+        var username_db = $(this).attr('data-udb');
+        var title = $(this).attr('data-title');
+        var $form = $(this);
+
+        $.ajax({
+            url: 'mac_' + op + '.php?mac=' + id + '&username=' + username + '&token=' + token + '&username_db=' + username_db,
+            method: 'GET',
+
+        }).success(function(response) {
+            // Show the dialog
+            bootbox
+                .dialog({
+                    title:  title,
+                    message: $(response),
+                    show: false, // We will show it manually later
+  onEscape: function() { console.log("Escape!"); },
+  backdrop: true,
+                    callback: function() {
+                        $('.bootbox.modal').modal('hide');
+                    }
+                })
+                .on('shown.bs.modal', function() {
+                    $('#deleteUser')
+                        .show()                             // Show the login form
+                        .formValidation('resetForm'); // Reset form
+                })
+                .on('hide.bs.modal', function(e) {
+                    // Bootbox will remove the modal (including the body which contains the login form)
+                    // after hiding the modal
+                    // Therefor, we need to backup the form
+                        parent.location.reload(true);
+                })
+                .modal('show');
+        });
+    });
+});
+
+jQuery(function() {
+    $('form[data-async]').on('submit', function(event) {
+        event.preventDefault()
+        var $form = $(this);
+        var $target = $($form.attr('data-target'));
+
+    if ( $(this).data('requestRunning') ) {
+        return;
+    }
+
+    $(this).data('requestRunning', true);
+
+        $.ajax({
+            type: $form.attr('method'),
+            url: $form.attr('action'),
+            data: $form.serialize(),
+
+            success: function(data, status) {
+            if (data == "ok"){
+              $("#doSubmit").addClass( "hidden" );
+              $("#myModal").addClass("text-success");
+              $("#submitOK").removeClass( "hidden" );
+
+            } else {
+              $("#modal-title").html('<? print $errorHeader ?>');
+              $("#modal-body").html(data);
+              $("#submitError").removeClass("hidden");
+
+            }
+        },
+        complete: function() {
+            $(this).data('requestRunning', false);
+        }
+        });
+
+        event.preventDefault();
+    });
+});
+
+$('#myModal').on('hidden.bs.modal', function () {
+        parent.location.reload(true);
+})
+
+$('.btn').on('click', function() {
+    var $this = $(this);
+  $this.button('loading');
+    setTimeout(function() {
+       $this.button('reset');
+   }, 750);
+});
+</script>
+        </div>
+
+<? include $footer ?>

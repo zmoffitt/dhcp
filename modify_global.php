@@ -46,14 +46,14 @@
 
 		if (! $dns_1 || ! $dns_2 || ! $wins_1){
 			print "<center><font color=ff0000><b>\n";
-			print "Domain name, DNS Server 1, DNS Server 2, WINS Server 1, and WINS Server 2 can NOT be empty!<br>\n";
+			print "Domain name, NTP Server, DNS Server 1, DNS Server 2, WINS Server 1, and WINS Server 2 can NOT be empty!<br>\n";
 			print "</b></font></center><br>\n";
 			include "$footer";
 			exit;
 		}
 
 	        $id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
-       		$str_sql = "UPDATE $db_tablename_global set dns_1='$dns_1', dns_2='$dns_2', dns_3='$dns_3', dns_4='$dns_4', dns_5='$dns_5', wins_1='$wins_1', wins_2='$wins_2' WHERE id=1";
+       		$str_sql = "UPDATE $db_tablename_global set ntp_server='$ntp_server', dns_1='$dns_1', dns_2='$dns_2', dns_3='$dns_3', dns_4='$dns_4', dns_5='$dns_5', wins_1='$wins_1', wins_2='$wins_2' WHERE id=1";
 
 
 	        $result = mysql_db_query($db_name, $str_sql, $id_link);
@@ -66,6 +66,11 @@
 
                 $datetime = date("Y-m-d H:i:s");
                 $ip_from = $REMOTE_ADDR;
+
+                if (strcmp("$ntp_server", "$old_ntp") != 0){
+                        $changes .= "NTP: $old_ntp => $ntp_server. ";
+                        $changes .= "<br>\n";
+                }
 
                 if (strcmp("$dns_1", "$old_dns_1") != 0){
                         $changes .= "DNS 1: $old_dns_1 => $dns_1. ";
@@ -144,8 +149,9 @@
 	$wins_1 = $row->wins_1;
 	$wins_2 = $row->wins_2;
 
-	print "<form method=POST action=modify_global.php>\n";
+	print "<form data-async method=\"post\" action=\"modify_global.php\" role=\"form\">\n";
 	print "<input type=hidden name=action value=modify_global>\n";
+	print "<input type=hidden name=old_ntp value=\"$ntp_server\">\n";
 	print "<input type=hidden name=old_dns_1 value=\"$dns_1\">\n";
 	print "<input type=hidden name=old_dns_2 value=\"$dns_2\">\n";
 	print "<input type=hidden name=old_dns_3 value=\"$dns_3\">\n";
@@ -158,96 +164,88 @@
 ?>
     <div class="container-fluid">
     <div id="row"><div class="col-xs-6 col-xs-offset-3">
-        <table class="table table-striped table-hover table-bordered table-condensed">
-	<thead>
-	<tr><td>Option</td>
-	<td>Value</td></td>
-	</thead>
-<?
-	print "<tr><td>Domain Name:</td>\n";
-	print "<td>$domain</td></tr>\n";
+	<div class="panel panel-default">
+	<div class="panel-heading"><h4 class="panel-title strong">Global Configuration</div>
 
-	print "<tr><td>Time/NTP Server:</td>\n";
-	print "<td>$ntp_server</td></tr>\n";
-	
-	print "<tr><td>DNS Server 1:</td>\n";
+        <? if ((strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN)): ?>
+        <? $disabled = "" ?>
+        <? else: ?>
+        <? $disabled = "disabled" ?>
+	<? endif; ?>
 
-	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
-		print "<td><input type=text name=dns_1 value=\"$dns_1\"></td></tr>\n";
-	}
+	<div class="panel-body">
+        <fieldset class="form-group"><div class="form-group row"><label class="col-md-2 form-control-label">Domain:</label>
+        <div class="col-md-10"><input type="text" class="form-control" name="domain" value="<? echo $domain ?>" disabled /></div></div></fieldset>
+        <fieldset class="form-group"><div class="form-group row"><label class="col-md-2 form-control-label">NTP:</label>
+        <div class="col-md-10"><input type="text" class="form-control" name="ntp_server" value="<? echo $ntp_server ?>" <? echo $disabled ?> /></div></div></fieldset>
+        <fieldset class="form-group"><div class="form-group row"><label class="col-md-2 form-control-label">DNS #1:</label>
+        <div class="col-md-10"><input type="text" class="form-control" name="dns_1" value="<? echo $dns_1 ?>" <? echo $disabled ?> /></div></div></fieldset>
+        <fieldset class="form-group"><div class="form-group row"><label class="col-md-2 form-control-label">DNS #2:</label>
+        <div class="col-md-10"><input type="text" class="form-control" name="dns_2" value="<? echo $dns_2 ?>" <? echo $disabled ?> /></div></div></fieldset>
+        <fieldset class="form-group"><div class="form-group row"><label class="col-md-2 form-control-label">DNS #3:</label>
+        <div class="col-md-10"><input type="text" class="form-control" name="dns_3" value="<? echo $dns_3 ?>" <? echo $disabled ?> /></div></div></fieldset>
+        <fieldset class="form-group"><div class="form-group row"><label class="col-md-2 form-control-label">DNS #4:</label>
+        <div class="col-md-10"><input type="text" class="form-control" name="dns_4" value="<? echo $dns_4 ?>" <? echo $disabled ?> /></div></div></fieldset>
+        <fieldset class="form-group"><div class="form-group row"><label class="col-md-2 form-control-label">DNS #5:</label>
+        <div class="col-md-10"><input type="text" class="form-control" name="dns_5" value="<? echo $dns_5 ?>" <? echo $disabled ?> /></div></div></fieldset>
+        <fieldset class="form-group"><div class="form-group row"><label class="col-md-2 form-control-label">WINS #1:</label>
+        <div class="col-md-10"><input type="text" class="form-control" name="wins_1" value="<? echo $wins_1 ?>" <? echo $disabled ?> /></div></div></fieldset>
+        <fieldset class="form-group"><div class="form-group row"><label class="col-md-2 form-control-label">WINS #2:</label>
+        <div class="col-md-10"><input type="text" class="form-control" name="wins_2" value="<? echo $wins_2 ?>" <? echo $disabled ?> /></div></div></fieldset>
+	</div>
 
-	else{
-		print "<td>$dns_1</td></tr>\n";
-	}
+	<? if ((strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN)): ?>
+	<div class="panel-footer">
+	<div class="row text-center">
+	<button type="submit" class="btn btn-primary">Modify Options</button>
+	</div></div>
+	<? endif; ?>
 
-	print "<tr><td>DNS Server 2:</td>\n";
+	</form>
+	</div>
+	</div></div></div>
+</script>
 
-	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
-		print "<td><input type=text name=dns_2 value=\"$dns_2\"></td></tr>\n";
-	}
+<!-- Include Javascript for window handling --> 
+<script type="text/javascript">
+$(document).ready(function() {
+jQuery(function() {
+    $('form[data-async]').on('submit', function() {
+    var op = $(this).attr('data-op');
+    var id = $(this).attr('data-id');
+    var username = $(this).attr('data-username');
+    var token = $(this).attr('data-token');
+    var grp = $(this).attr('data-grp');
+    var title = $(this).attr('data-title');
+    var ip = $(this).attr('data-ip');
+    var $form = $(this);
 
-	else{
-		print "<td>$dns_2</td></tr>\n";
-	}
+        $.ajax ({
+            url: $(this).attr('action'),
+            method: $(this).attr('method'),
+        })
+        
+        .success (function(response) {
+            bootbox.dialog({
+                title:  title,
+                message: $(response),
+                show: false, // We will show it manually later
+                onEscape: function() { console.log("Escape!"); },
+                backdrop: true,
+                callback: function() { $('.bootbox.modal').modal('hide'); }
+            })
+                
+            .on('shown.bs.modal', function() {
+                $('#modalBody').show()
+            })
 
-	print "<tr><td>DNS Server 3:</td>\n";
+            .on('hide.bs.modal', function(e) { parent.location.reload(true); })
 
-	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
-		print "<td><input type=text name=dns_3 value=\"$dns_3\"></td></tr>\n";
-	}
-
-	else{
-		print "<td>$dns_3</td></tr>\n";
-	}
-
-	print "<tr><td>DNS Server 4:</td>\n";
-
-	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
-		print "<td><input type=text name=dns_4 value=\"$dns_4\"></td></tr>\n";
-	}
-
-	else{
-		print "<td>$dns_4</td></tr>\n";
-	}
-
-	print "<tr><td>DNS Server 5:</td>\n";
-
-	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
-		print "<td><input type=text name=dns_5 value=\"$dns_5\"></td></tr>\n";
-	}
-
-	else{
-		print "<td>$dns_5</td></tr>\n";
-	}
-
-	print "<tr><td>WINS Server 1:</td>\n";
-
-	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
-		print "<td><input type=text name=wins_1 value=\"$wins_1\"></td></tr>\n";
-	}
-
-	else{
-		print "<td>$wins_1&nbsp;</td></tr>\n";
-	}
-
-	print "<tr><td>WINS Server 2:</td>\n";
-
-	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
-		print "<td><input type=text name=wins_2 value=\"$wins_2\"></td></tr>\n";
-	}
-
-	else{
-		print "<td>$wins_2&nbsp;</td></tr>\n";
-	}
-
-	if ( (strcmp($action, "modify_global") != 0) && ($access_level == $ADMIN) ){
-		print "<tr><td colspan=2 align=center><input type=submit value=\"Modify Options\"></td></tr>\n";
-	}
-
-	print "</table>\n";
-	print "</form>\n";
-	print "</div></div></div>\n";
-	include "$footer";
-
-?>
+            .modal('show');
+        });
+    });
+});
+});
+</script>
+<? include "$footer"; ?>
 

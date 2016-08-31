@@ -1,48 +1,52 @@
-<?
-	include "includes/authenticate.inc.php";
-	include "includes/config.inc.php";
-	$access_level = access_level($username);
-?>
-	
-<title>DHCP Manager</title>
-<center>
-<font color=0000ff>
-<h1>DHCP Manager - Blacklist MAC</h1>
-</font>
-<? include "links.inc.php"; ?>
-<br>
+<?php                                                                                                                                                          
+        
+/**     
+ * Main IP Management page for DHCP Management Console                                                                                                         
+ * JS requested but not required - using it for form validation                                                                                                
+ *                                                                                                                                                             
+ * PHP version 5
+ *
+ * @category  PHP
+ * @package   PSI
+ * @author    Zachary Moffitt <zac@gsb.columbia.edu>                                                                                                           
+ * @copyright 2016 Columbia Business School                                                                                                                    
+ */
+                                                                                                                                                               
+    /*
+     * Configure information about the page                                                                                                                    
+     */                                                                                                                                                        
 
-<center>
-<h3>
+    $pageTitle = "Blacklist Management";
+                                                                                                                                                               
+    /*
+     * initialize the includes for functions and generate the header
+     * use this in all front-end pages to ensure uniformity
+     */
 
-<a href="#" onclick="window.open('blacklist_add.php?username=<? echo "$username"; ?>&token=<? echo "$token"; ?>', 'mac', 'width=<? echo $popup_width; ?>, height=<? echo $popup_height; ?>');">Add a MAC Address to the blacklist</a>
+    require "includes/authenticate.inc.php";
+    require "includes/config.inc.php";
+    require "includes/header.inc.php";
+    include_once "includes/functions.inc.php";
 
-</h3>
-</center>
+    /* Push and pull vars between pages */
 
-<? 
+    $_GET['username'] = $username;
+    $access_level = access_level($username);
+
+    /* Use the body include to centralize formatting */
+    include "includes/body.inc.php";
+
 
         $id_link = mysql_pconnect($db_hostname, $db_username, $db_password);
-
-	$str_sql = "SELECT * FROM $db_tablename_ip WHERE ip_type = 'blacklisted'";
-
-        if ($orderby){
-                $str_sql .= " ORDER BY $orderby";
-        }
-
-	else{
-                $str_sql .= " ORDER BY username";
-        }
+	$str_sql = "SELECT * FROM $db_tablename_ip WHERE ip_type = 'blacklisted' ORDER BY username";
 
         $result = mysql_db_query($db_name, $str_sql, $id_link);
 
        	if (! $result){
                 print "Failed to submit!<br>\n";
-       	        include "$footer";
                	exit;
         }
 
-//	print "Query: *$str_sql*<br>\n";
 
 	$total_rows = mysql_num_rows($result);
 
@@ -55,21 +59,28 @@
        	        include "$footer";
                	exit;
         }
+?>
+    <div class="container-fluid">
+        <? if ($access_level == $ADMIN): ?>
+	<div class="text-right">
+        <button data-op="add" data-id="" data-username="<? echo $username ?>" data-token="<? echo $token ?>" data-udb="" data-title="Add new MAC to database" class="btn btn-default push-right opButton" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Loading..." type="button">Add MAC to Blacklist</button></div>
+	<hr />
+        <? endif; ?>
+    <div id="row"><div class="col-xs-12">
+        <table class="table table-striped table-hover table-bordered table-condensed"  id="defaultList">
+    <thead>
+        <th>Computer Name</th>
+        <th>Client Name</th>
+	<th>MAC Address</th>
+	<th>Notes</th>
 
-	print "<center>\n";
-	print "<table border=2 cellpadding=2 cellspacing=2 width=70%>\n";
-	print "<tr><td align=center colspan=7><b><u>Blacklisted MAC Table</u></b></td></tr>\n";
+    <? if ($access_level == $ADMIN): ?>
+	<th>Modify</th>
+	<th>Delete</th>
+    <? endif; ?>
 
-	print "<tr><td align=center><b><a href=blacklist.php?username=$username&token=$token&orderby=username>Computer Name</a></b></td>\n";
-
-	print "<td align=center><b><a href=blacklist.php?username=$username&token=$token&orderby=clientname>Client Name</a></b></td>\n";
-
-	print "<td align=center><b><a href=blacklist.php?username=$username&token=$token&orderby=mac>MAC</a></b></td>\n";
-
-	print "<td align=center><b>Notes</b></td>\n";
-	print "<td align=center><b>Delete</b></td>\n";
-	print "<td align=center><b>Modify</b></td></tr>\n";
-
+        </thead><tbody>
+<?
 	while ($row = mysql_fetch_object($result)){
 
 		$username_db = $row->username;
@@ -84,38 +95,180 @@
 
 		print "<tr>\n";
 
-		print "<td nowrap><small>$username_db&nbsp;</small></td>\n";
-		print "<td nowrap><small>$clientname&nbsp;</small></td>\n";
-		print "<td nowrap>&nbsp;\n";
-		print strtoupper($mac);
-		print "&nbsp;</td>\n";
+		print "<td nowrap><small>$username_db</small></td>\n";
+		print "<td nowrap><small>$clientname</small></td>\n";
+		print "<td class=\"text-uppercase\"><samp>$mac</samp></td>\n";
 		print "<td><small>$notes&nbsp;</small></td>\n";
 
-		print "<td align=center nowrap>\n";
-		print "<form action=blacklist_delete.php>\n";
-		print "<input type=hidden name=username value=$username>\n";
-		print "<input type=hidden name=token value=$token>\n";
-		print "<input type=hidden name=username_db value=$username_db>\n";
-		print "<input type=hidden name=mac value=$mac>\n";
-		print "<input type=submit value=Delete>\n";
-		print "</form>\n";
-		print "</td>\n";
-
+		if ($access_level == $ADMIN) {
 		print "<td align=center nowrap>\n";
 		print "<form action=blacklist_modify.php>\n";
 		print "<input type=hidden name=username value=$username>\n";
 		print "<input type=hidden name=token value=$token>\n";
 		print "<input type=hidden name=username_db value=$username_db>\n";
 		print "<input type=hidden name=mac value=$mac>\n";
-		print "<input type=submit value=Modify>\n";
+	        print "<button data-op=\"modify\" data-id=\"$mac\" data-username=\"$username\" data-token=\"$token\" data-udb=\"$username_db\" data-title=\"Modifying attributes for
+		    <span class='label label-default'>$mac</span>\" class=\"btn btn-warning opButton\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i>\" type=\"button\">Modify</button>\n";
 		print "</form>\n";
-		print "</td></tr>\n";
+		print "</td>\n";
+
+		print "<td align=center nowrap>\n";
+                print "<form data-async action=blacklist_delete.php>\n";
+                print "<input type=hidden name=username value=$username>\n";
+                print "<input type=hidden name=token value=$token>\n";
+                print "<input type=hidden name=username_db value=$username_db>\n";
+                print "<input type=hidden name=mac value=$mac>\n";
+                print "<button data-op=\"delete\" data-id=\"$mac\" data-username=\"$username\" data-token=\"$token\" data-udb=\"$username_db\" data-title=\"Delete MAC <samp>$mac</samp>?\" `
+                    class=\"btn btn-danger opButton\" data-loading-text=\"<i class='fa fa-circle-o-notch fa-spin'></i>\" type=\"button\">Delete</button>\n";
+                print "</form>\n";
+                print "</td></tr>\n";
+        
 
 	}
+	}
 	
-	print "</table><br>\n";
+	print "</tbody></table><br>\n";
 	print "<a target=history href=logs.php?operation=post&keyword=add+blacklisted&order=datetime>See all MACs once blacklisted</a>\n"; 
-	print "<br><br>\n";
-	include "$footer";
 
 ?>
+            </div>
+          </div>
+</div>
+</div>
+</div>
+
+<script>
+$(document).ready(function() {
+    $('.opButton').on('click', function() {
+        // Get the record's ID via attribute
+	var op = $(this).attr('data-op');
+        var id = $(this).attr('data-id');
+	var username = $(this).attr('data-username');
+	var token = $(this).attr('data-token');
+	var username_db = $(this).attr('data-udb');
+	var title = $(this).attr('data-title');
+	var $form = $(this);
+
+        $.ajax({
+            url: 'blacklist_' + op + '.php?mac=' + id + '&username=' + username + '&token=' + token + '&username_db=' + username_db,
+            method: 'GET',
+
+        }).success(function(response) {
+            // Show the dialog
+            bootbox
+                .dialog({
+                    title:  title,
+                    message: $(response),
+                    show: false, // We will show it manually later
+  onEscape: function() { console.log("Escape!"); },
+  backdrop: true,
+		    callback: function() {
+			$('.bootbox.modal').modal('hide');
+		    }
+                })
+                .on('shown.bs.modal', function() {
+                    $('#deleteUser')
+                        .show()                             // Show the login form
+                        .formValidation('resetForm'); // Reset form
+                })
+                .on('hide.bs.modal', function(e) {
+                    // Bootbox will remove the modal (including the body which contains the login form)
+                    // after hiding the modal
+                    // Therefor, we need to backup the form
+			parent.location.reload(true);
+                })
+                .modal('show');
+        });
+    });
+});
+
+$(document).ready(function() {
+    $('#addUserForm')
+        .formValidation({
+            framework: 'bootstrap',
+            icon: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+	    autoFocus: 'enabled',
+            fields: {
+                staff: {
+                    validators: {
+                        stringLength: {
+                            min: 3,
+                            max: 25,
+                            message: 'The username is not valid'
+                        },
+                        notEmpty: {
+                            message: 'The full name is required'
+                        },
+                        regexp: {
+                            regexp: /^[a-zA-Z0-9\s]+$/,
+                            message: 'Only alphanumeric characters are permitted'
+                        }
+                    }
+                },
+            }
+        })
+        .on('success.field.fv', function(e, data) {
+            if (data.fv.getInvalidFields().length > 0) {    // There is invalid field
+                data.fv.disableSubmitButtons(true);
+            }
+        });
+});
+
+jQuery(function() {
+    $('form[data-async]').on('submit', function(event) {
+        event.preventDefault()
+        var $form = $(this);
+        var $target = $($form.attr('data-target'));
+
+    if ( $(this).data('requestRunning') ) {
+        return;
+    }
+
+    $(this).data('requestRunning', true);
+
+        $.ajax({
+            type: $form.attr('method'),
+            url: $form.attr('action'),
+            data: $form.serialize(),
+
+            success: function(data, status) {
+            if (data == "ok"){
+	      $("#doSubmit").addClass( "hidden" );
+	      $("#myModal").addClass("text-success");
+	      $("#submitOK").removeClass( "hidden" );
+
+            } else {
+	      $("#modal-title").html('<? print $errorHeader ?>');
+	      $("#modal-body").html(data);
+	      $("#submitError").removeClass("hidden");
+
+	    }
+	},
+        complete: function() {
+            $(this).data('requestRunning', false);
+        }
+        });
+
+        event.preventDefault();
+    });
+});
+
+$('#myModal').on('hidden.bs.modal', function () {
+	parent.location.reload(true);
+})
+
+$('.btn').on('click', function() {
+    var $this = $(this);
+  $this.button('loading');
+    setTimeout(function() {
+       $this.button('reset');
+   }, 750);
+});
+</script>
+        </div>
+
+<? include $footer ?>

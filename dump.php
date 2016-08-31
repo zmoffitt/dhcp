@@ -83,19 +83,23 @@ if (strcmp("$action", "go") == 0){
 		if ($subnet_pattern == "172.18") {
 			$subnet_pattern = "172.18.0";
 		}
-		if ($row->enabled == 0) { break; }
+		if ($row->enabled == 0) { continue; }
 		else {
 
 		echo "subnet pattern $subnet_pattern \n";
 
 		fputs($tmpfile, "# Subnet $row->subnet Declaration\n");
 		fputs($tmpfile, "# Notes: $row->notes\n\n");
+		fputs($tmpfile, "# $row->notes\n");
 		fputs($tmpfile, "subnet $row->subnet netmask $row->mask {\n\n");
+		if (($row->override_dns == 1) && ($row->odns_1 != null)) {
+                        fputs($tmpfile, "\toption domain-name-servers $row->odns_1 $row->odns_2;\n");
+                }
 		if ($row->authoritative == 1){
 			fputs($tmpfile, "\tauthoritative;\n");
 		}
 
-		$str_sql2 = "SELECT * FROM $db_tablename_ip WHERE ip LIKE '%$subnet_pattern%' AND ip_type='dynamic' order by ip";
+		$str_sql2 = "SELECT * FROM $db_tablename_ip WHERE subnet LIKE '$subnet_pattern%' AND ip_type='dynamic' order by id";
 
 		$result2 = mysql_db_query($db_name, $str_sql2, $id_link);
 
@@ -108,20 +112,23 @@ if (strcmp("$action", "go") == 0){
 		$total_rows = mysql_num_rows($result2);
 		$beginning = 1;
 		$i = 0;
-		$ip_no_last = -1;
+		$ip_no_last = 0;
 
 		while ($row2 = mysql_fetch_object($result2)){
 
 			$ip_tmp = split("\.", $row2->ip);
+                        $sub_tmp = split("\.", $subnet_pattern);
+			$ip_su_current = $ip_tmp[2];
+                        if (($sub_tmp[2] != $ip_su_current) && ($i % 255 == '0') && ($sub_tmp[2] != '1')) { $subnet_pattern = ($ip_tmp[0].".".$ip_tmp[1].".".($ip_tmp[2])); echo "\t Matched subnet shift: ".$subnet_pattern."\n";}
 			$ip_no_current = $ip_tmp[3];
 			$diff = $ip_no_current - $ip_no_last;
-			if($subnet_pattern == "128.59.190") {
-				echo "in here  $subnet_pattern.$ip_no_current ";
+			if(($subnet_pattern == "128.59.190") || ($subnet_pattern == "10.252.0")) {
+				echo "in here $subnet_pattern.$ip_no_current\n";
 			}
 
 			if ($beginning == 1){
 
-				echo "in here";
+				echo "Evaluating: $subnet_pattern $ip_no_last \n";
 				fputs($tmpfile, "\trange $subnet_pattern.$ip_no_current ");
 				$continue = 1;
 				$beginning = 0;
@@ -133,6 +140,7 @@ if (strcmp("$action", "go") == 0){
 
 			else{
 				fputs($tmpfile, "$subnet_pattern.$ip_no_last;\n");
+				$subnet_pattern = ($ip_tmp[0].".".$ip_tmp[1].".".($ip_tmp[2])); 
 				fputs($tmpfile, "\trange $subnet_pattern.$ip_no_current ");
 				$continue = 0;
 			}

@@ -5,14 +5,11 @@ $db_hostname = 'localhost';
 
 // all dhcp partners should use the same auth host for single sign-on.
 $db_hostname_auth = 'localhost';
-$db_hostname_cbs = 'claven.gsb.columbia.edu';
 
 $db_username = 'dhcp';
 $db_password = 'dhcp2cool';
 $db_login_username = 'login';
 $db_login_password = 'login2cool';
-$db_cbs_username = 'cbs';
-$db_cbs_password = 'cbs2cool';
 
 $db_name = 'dhcp';
 $db_login_name = 'login';
@@ -28,7 +25,6 @@ $db_tablename_state = 'state';
 $db_table_groups = 'groups';
 $db_table_sessions = 'sessions';
 
-$auth_host = '128.59.172.3'; // authentication host
 $prefix = "128.59";
 $identifier = "Uris";
 $default_subnet = "172"; // default subnet to display
@@ -60,7 +56,7 @@ $dhcp_replicate = 1;
 // Usage: $dhcp_partners["<DHCP Server Identifier>"] = "<IP address>";
 // Should list all the OTHER DHCP server(s) that need to share data,
 // INCLUDING the server itself.
-$dhcp_partners["Culbs"] = "128.59.219.2";
+//$dhcp_partners["Culbs"] = "128.59.219.2";
 $dhcp_partners["Uris"] = "localhost";
 
 // colors for different types of IPs

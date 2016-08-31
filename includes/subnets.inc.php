@@ -16,6 +16,8 @@ if ($subnet == '83') {
         $s84 = "class=\"active\"";
 } else if ($subnet == '132') {
 	$s132 = "class=\"active\"";
+} else if ($subnet == '172') {
+        $s172 = "class=\"active\"";
 } else if ($subnet == '199') {
         $s199 = "class=\"active\"";
 } else if ($subnet == '205') {
@@ -38,13 +40,12 @@ if ($subnet == '83') {
         $mgmt = "class=\"active\"";
 } else if ($subnet == '192.168.13') {
         $storage = "class=\"active\"";
-} else {
-	$s172 = "class=\"active\"";
-}
+} 
 
 
 	if ($activePage == 'modify_subnet') {
-	print "<div class=\"col-xs-6\" style=\"float: none; margin: 0 auto;\">\n";
+        print "<div class=\"row\">\n";  
+	print "<div class=\"col-xs-8\" style=\"float: none; margin: 0 auto;\">\n";
 	} else {
         print "<div class=\"container\">\n";
         print "<div class=\"row text-center\">\n";

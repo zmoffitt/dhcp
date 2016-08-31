@@ -63,8 +63,8 @@
     	$notes = ereg_replace("[\n\r]", " ", $notes);
 
     	// update the ip record
-    	if (strcmp($ip_type, "dynamic") == 0) { $str_sql = "UPDATE $db_tablename_ip set username='', ip_type='$ip_type', lease='0', clientname='', mac='', notes='' WHERE ip='$ip'"; }
-        else { $str_sql = "UPDATE $db_tablename_ip set username='$user', ip_type='$ip_type', lease='$lease', clientname='$clientname', mac='$mac', notes='$notes', lastUpdated='$username' WHERE ip='$ip'"; }
+    	if (strcmp($ip_type, "dynamic") == 0) { $str_sql = "UPDATE $db_tablename_ip set username='', ip_type='$ip_type', lease='0', clientname='', mac='', notes='',lastUpdated='$who' WHERE ip='$ip'"; }
+        else { $str_sql = "UPDATE $db_tablename_ip set username='$user', ip_type='$ip_type', lease='$lease', clientname='$clientname', mac='$mac', notes='$notes', lastUpdated='$who' WHERE ip='$ip'"; }
 
     	$result = mysql_db_query($db_name, $str_sql, $id_link);
 /*
